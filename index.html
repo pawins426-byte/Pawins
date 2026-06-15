@@ -1,1 +1,1262 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PAWINS — Plateforme d'Investissement</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#04080F;--bg2:#080E1A;--bg3:#0D1422;
+  --blue:#1565FF;--blue2:#0A45CC;--blue-light:#4D8EFF;--blue-glow:rgba(21,101,255,0.2);
+  --text:#F0F4FF;--text2:#6B7FA3;--text3:#3D4F6E;
+  --green:#00C97A;--red:#FF3D5A;--gold:#FFB300;
+  --card:#0A1020;--border:rgba(21,101,255,0.18);--border2:rgba(255,255,255,0.05);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;overflow-x:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:0}
+
+/* ======= NAVBAR ======= */
+.navbar{
+  position:fixed;top:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;z-index:300;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;
+  background:rgba(4,8,15,0.82);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  transition:all 0.3s;
+}
+.nav-logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;color:white;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 16px rgba(21,101,255,0.5);
+  animation:logoGlow 3s ease-in-out infinite;
+}
+@keyframes logoGlow{
+  0%,100%{box-shadow:0 0 16px rgba(21,101,255,0.5)}
+  50%{box-shadow:0 0 30px rgba(21,101,255,0.9),0 0 60px rgba(21,101,255,0.3)}
+}
+.logo-mark::after{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.15) 50%,transparent 70%);
+  animation:logoShine 3s ease-in-out infinite;
+}
+@keyframes logoShine{0%,100%{transform:translateX(-100%) rotate(45deg)}50%{transform:translateX(100%) rotate(45deg)}}
+.nav-logo-text{font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-btn{
+  background:var(--blue);border:none;border-radius:8px;
+  padding:8px 14px;color:white;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.3px;
+  transition:all 0.2s;
+}
+.nav-btn:active{transform:scale(0.96)}
+.nav-btn.outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+
+/* ======= HERO ======= */
+.hero{
+  min-height:auto;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:90px 22px 44px;text-align:center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%,rgba(21,101,255,0.12) 0%,transparent 65%),var(--bg);
+}
+.hero-bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(21,101,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(21,101,255,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+}
+.hero-orb1{position:absolute;top:8%;left:-30%;width:320px;height:320px;background:radial-gradient(circle,rgba(21,101,255,0.1) 0%,transparent 70%);border-radius:50%;animation:orbFloat 8s ease-in-out infinite}
+.hero-orb2{position:absolute;bottom:15%;right:-25%;width:260px;height:260px;background:radial-gradient(circle,rgba(77,142,255,0.07) 0%,transparent 70%);border-radius:50%;animation:orbFloat 10s ease-in-out infinite reverse}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.08)}}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.25);
+  border-radius:30px;padding:7px 16px;
+  font-size:11px;font-weight:700;color:var(--blue-light);
+  letter-spacing:1.5px;text-transform:uppercase;
+  margin-bottom:28px;position:relative;z-index:1;
+  animation:fadeInDown 0.8s ease both;
+}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:livePulse 1.5s ease-in-out infinite}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.7)}}
+
+.hero-main-logo{
+  position:relative;z-index:1;margin-bottom:24px;
+  animation:fadeInUp 0.9s ease both 0.1s;
+}
+.hero-logo-ring{
+  width:110px;height:110px;margin:0 auto 16px;
+  border:2px solid rgba(21,101,255,0.3);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;animation:ringRotate 12s linear infinite;
+}
+@keyframes ringRotate{0%{border-color:rgba(21,101,255,0.3)}50%{border-color:rgba(77,142,255,0.7)}100%{border-color:rgba(21,101,255,0.3)}}
+.hero-logo-inner{
+  width:84px;height:84px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 40px rgba(21,101,255,0.6);
+  animation:logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(21,101,255,0.6)}50%{box-shadow:0 0 70px rgba(21,101,255,0.9),0 0 120px rgba(21,101,255,0.2)}}
+.hero-logo-letter{font-size:34px;font-weight:900;color:white;letter-spacing:-1px}
+.hero-logo-name{font-size:38px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#fff 40%,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.hero-title{font-size:17px;color:var(--text2);line-height:1.65;margin-bottom:32px;position:relative;z-index:1;max-width:300px;animation:fadeInUp 1s ease both 0.2s}
+
+.hero-cta{display:flex;gap:10px;position:relative;z-index:1;margin-bottom:44px;animation:fadeInUp 1s ease both 0.3s}
+.btn-cta-main{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border:none;border-radius:12px;padding:14px 22px;
+  color:white;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  box-shadow:0 4px 28px rgba(21,101,255,0.45);
+  transition:all 0.2s;letter-spacing:0.3px;
+}
+.btn-cta-main:active{transform:scale(0.97)}
+.btn-cta-sec{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;padding:14px 20px;color:var(--text2);
+  font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;
+}
+
+.hero-stats{
+  display:flex;width:100%;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:16px;overflow:hidden;
+  position:relative;z-index:1;animation:fadeInUp 1s ease both 0.4s;
+}
+.hstat{flex:1;padding:16px 10px;text-align:center;border-right:1px solid var(--border2)}
+.hstat:last-child{border-right:none}
+.hstat-val{font-size:19px;font-weight:800;color:var(--blue-light);margin-bottom:3px}
+.hstat-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ======= TICKER ======= */
+.ticker{background:rgba(21,101,255,0.07);border-top:1px solid rgba(21,101,255,0.12);border-bottom:1px solid rgba(21,101,255,0.12);padding:11px 0;overflow:hidden}
+.ticker-track{display:flex;white-space:nowrap;animation:tickerMove 28s linear infinite}
+.ticker-item{font-size:12px;color:var(--blue-light);font-weight:600;padding:0 28px;display:flex;align-items:center;gap:6px}
+.ticker-sep{color:var(--border);font-size:16px}
+@keyframes tickerMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ======= SECTION BASE ======= */
+.section{padding:52px 20px}
+.section.alt{background:var(--bg2)}
+.eyebrow{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.sec-title{font-size:24px;font-weight:800;line-height:1.2;margin-bottom:8px}
+.sec-sub{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:28px}
+
+/* ======= HOW IT WORKS ======= */
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;
+  transition:border-color 0.3s;
+}
+.step:hover{border-color:rgba(21,101,255,0.4)}
+.step-num{
+  width:38px;height:38px;min-width:38px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:900;color:white;
+}
+.step-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ======= BASSIN / PLANS ======= */
+.plans-list{display:flex;flex-direction:column;gap:14px}
+.plan-card{
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;position:relative;cursor:pointer;transition:all 0.25s;
+}
+.plan-card:active{transform:scale(0.99)}
+.plan-card.featured{border-color:rgba(21,101,255,0.45);box-shadow:0 0 28px rgba(21,101,255,0.1)}
+.plan-pop{
+  position:absolute;top:14px;right:14px;
+  background:var(--blue);color:white;font-size:9px;font-weight:800;
+  padding:4px 9px;border-radius:5px;letter-spacing:0.8px;text-transform:uppercase;
+}
+.plan-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 14px;border-bottom:1px solid var(--border2);
+}
+.plan-name{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.plan-icon{
+  width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;color:white;
+}
+.plan-price{font-size:22px;font-weight:900;color:var(--blue-light)}
+.plan-price span{font-size:12px;color:var(--text2);font-weight:500}
+.plan-grid{display:grid;grid-template-columns:1fr 1fr}
+.plan-cell{padding:12px 16px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+.plan-cell:nth-child(even){border-right:none}
+.plan-cell:nth-last-child(-n+2){border-bottom:none}
+.plan-cell-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px}
+.plan-cell-val{font-size:15px;font-weight:700}
+.plan-cell-val.g{color:var(--green)}
+.plan-cell-val.o{color:var(--gold)}
+.plan-foot{padding:14px 18px}
+.btn-plan{
+  width:100%;padding:12px;border-radius:10px;border:none;
+  color:white;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;letter-spacing:0.3px;transition:all 0.2s;
+}
+.plan-detail-hint{font-size:11px;color:var(--text2);text-align:center;margin-top:8px;opacity:0.7}
+
+/* ======= PLAN DETAIL PAGE ======= */
+.plan-detail-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);
+  z-index:400;align-items:flex-end;justify-content:center;
+}
+.plan-detail-overlay.active{display:flex}
+.plan-detail-sheet{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:24px 24px 0 0;width:100%;max-width:430px;
+  max-height:90vh;overflow-y:auto;
+  animation:sheetUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+  padding:0 0 40px;
+}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:14px auto 20px}
+.sheet-header{padding:0 20px 20px;border-bottom:1px solid var(--border2)}
+.sheet-plan-name{font-size:24px;font-weight:900;margin-bottom:4px}
+.sheet-plan-sub{font-size:13px;color:var(--text2)}
+.sheet-hero-price{
+  background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));
+  border:1px solid var(--border);border-radius:16px;
+  padding:20px;margin:20px;text-align:center;
+}
+.shp-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.shp-amount{font-size:44px;font-weight:900;color:var(--blue-light)}
+.shp-usdt{font-size:13px;color:var(--text2);margin-top:4px}
+.sheet-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:20px}
+.sstat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+.sstat-icon{font-size:20px;margin-bottom:6px}
+.sstat-val{font-size:18px;font-weight:800;margin-bottom:2px}
+.sstat-val.g{color:var(--green)}
+.sstat-val.b{color:var(--blue-light)}
+.sstat-val.o{color:var(--gold)}
+.sstat-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px}
+.sheet-timeline{padding:0 20px;margin-bottom:20px}
+.stl-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.stl-bar{height:6px;background:var(--bg3);border-radius:3px;margin-bottom:8px;overflow:hidden}
+.stl-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue-light));border-radius:3px;animation:fillAnim 1s ease both}
+@keyframes fillAnim{from{width:0%}to{width:var(--w)}}
+.stl-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text2)}
+.sheet-weekly{padding:0 20px;margin-bottom:20px}
+.weekly-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.weekly-row{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;margin-bottom:8px;
+}
+.wr-label{font-size:13px;font-weight:600}
+.wr-val{font-size:13px;font-weight:700;color:var(--green)}
+.sheet-btn{margin:0 20px}
+.sheet-btn button{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:white;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  box-shadow:0 4px 24px rgba(21,101,255,0.4);
+}
+.sheet-close{
+  position:absolute;top:14px;right:14px;
+  width:32px;height:32px;background:rgba(255,255,255,0.08);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;color:var(--text2);
+}
+
+/* ======= TEAM SECTION ======= */
+.team-carousel{overflow:hidden;margin:0 -20px;padding:0 20px}
+.team-track{display:flex;gap:14px;animation:teamScroll 20s linear infinite;width:max-content}
+.team-track:hover{animation-play-state:paused}
+@keyframes teamScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.team-member{
+  display:flex;flex-direction:column;align-items:center;gap:10px;flex-shrink:0;
+}
+.team-avatar-wrap{position:relative}
+.team-avatar{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  border:2px solid rgba(21,101,255,0.4);
+}
+.team-body-svg{width:100%;height:100%}
+.team-jersey{
+  position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);
+  background:var(--blue);color:white;font-size:7px;font-weight:900;
+  padding:2px 6px;border-radius:4px;white-space:nowrap;letter-spacing:0.5px;
+}
+.team-name{font-size:12px;font-weight:700;color:var(--text)}
+.team-role{font-size:10px;color:var(--text2)}
+
+/* ======= TABLES ======= */
+.table-wrap{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;
+}
+.table-head{
+  display:flex;background:rgba(21,101,255,0.08);
+  border-bottom:1px solid var(--border);padding:10px 14px;
+}
+.th{flex:1;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px}
+.table-body{}
+.table-row{
+  display:flex;align-items:center;padding:12px 14px;
+  border-bottom:1px solid var(--border2);transition:background 0.15s;
+}
+.table-row:last-child{border-bottom:none}
+.table-row:active{background:rgba(255,255,255,0.02)}
+.td{flex:1;font-size:12px;font-weight:500}
+.td.g{color:var(--green);font-weight:700}
+.td.b{color:var(--blue-light);font-weight:700}
+.td.r{color:var(--red);font-weight:700}
+.td.o{color:var(--gold);font-weight:700}
+.table-empty{padding:28px;text-align:center;color:var(--text2);font-size:13px}
+
+/* ======= FEATURES ======= */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 14px;
+  transition:border-color 0.25s,transform 0.25s;
+}
+.feat-card:active{transform:scale(0.98)}
+.feat-icon-wrap{
+  width:44px;height:44px;border-radius:12px;
+  background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;font-size:20px;
+}
+.feat-title{font-size:13px;font-weight:700;margin-bottom:5px}
+.feat-desc{font-size:11px;color:var(--text2);line-height:1.6}
+
+/* ======= REFERRAL ======= */
+.ref-card{
+  background:linear-gradient(135deg,rgba(21,101,255,0.12),rgba(77,142,255,0.05));
+  border:1px solid rgba(21,101,255,0.25);border-radius:22px;
+  padding:28px 20px;position:relative;overflow:hidden;text-align:center;
+}
+.ref-orb{position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(21,101,255,0.15) 0%,transparent 70%);border-radius:50%}
+.ref-icon-wrap{
+  width:64px;height:64px;margin:0 auto 16px;
+  background:rgba(21,101,255,0.15);border:1px solid rgba(21,101,255,0.3);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;
+}
+.ref-title{font-size:20px;font-weight:800;margin-bottom:8px}
+.ref-desc{font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:20px}
+.ref-rows{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;text-align:left}
+.ref-row{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(0,0,0,0.25);border-radius:10px;padding:10px 14px;
+}
+.rr-plan{font-size:12px;font-weight:600}
+.rr-pct{font-size:13px;font-weight:800;color:var(--green)}
+.rr-earn{font-size:11px;color:var(--text2)}
+
+/* ======= SETTINGS ======= */
+.settings-list{display:flex;flex-direction:column;gap:10px}
+.setting-item{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;
+}
+.setting-trigger{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px;cursor:pointer;transition:background 0.15s;
+}
+.setting-trigger:active{background:rgba(255,255,255,0.02)}
+.setting-left{display:flex;align-items:center;gap:12px}
+.setting-icon-wrap{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.2);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+}
+.setting-title{font-size:14px;font-weight:600}
+.setting-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.setting-arrow{color:var(--text2);font-size:18px;transition:transform 0.2s}
+.setting-body{
+  display:none;padding:0 16px 16px;border-top:1px solid var(--border2);
+}
+.setting-item.open .setting-body{display:block;padding-top:16px}
+.setting-item.open .setting-arrow{transform:rotate(90deg)}
+
+/* Form elements */
+.s-field{margin-bottom:12px}
+.s-field label{display:block;font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;font-weight:600}
+.s-field input,.s-field select{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;
+  outline:none;font-family:'Inter',sans-serif;transition:border-color 0.2s;
+}
+.s-field input:focus,.s-field select:focus{border-color:var(--blue)}
+.s-field input::placeholder{color:var(--text2)}
+.s-field select option{background:var(--bg3)}
+.s-btn{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border:none;border-radius:10px;padding:12px;width:100%;
+  color:white;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;margin-top:4px;transition:all 0.2s;
+}
+.s-btn:active{transform:scale(0.98)}
+.s-btn.danger{background:rgba(255,61,90,0.15);border:1px solid rgba(255,61,90,0.3);color:var(--red)}
+.s-btn.outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+
+/* Toggle */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border2)}
+.toggle-row:last-child{border-bottom:none}
+.tgl-info{}
+.tgl-label{font-size:13px;font-weight:500}
+.tgl-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.toggle{width:46px;height:26px;background:var(--bg3);border:1px solid var(--border);border-radius:13px;position:relative;cursor:pointer;transition:all 0.2s;flex-shrink:0}
+.toggle.on{background:var(--blue);border-color:var(--blue)}
+.toggle::after{content:'';position:absolute;width:20px;height:20px;background:white;border-radius:50%;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+.toggle.on::after{left:22px}
+
+/* ======= TESTIMONIALS ======= */
+.testi-list{display:flex;flex-direction:column;gap:12px}
+.testi-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px}
+.testi-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.testi-av{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;flex-shrink:0;
+}
+.testi-name{font-size:13px;font-weight:700}
+.testi-plan{font-size:11px;color:var(--blue-light)}
+.testi-stars{margin-left:auto;color:var(--gold);font-size:12px;letter-spacing:1px}
+.testi-text{font-size:13px;color:var(--text2);line-height:1.65;font-style:italic}
+
+/* ======= FAQ ======= */
+.faq-list{display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;cursor:pointer;font-size:13px;font-weight:600;
+  transition:background 0.15s;
+}
+.faq-q:active{background:rgba(255,255,255,0.02)}
+.faq-arrow{color:var(--text2);font-size:20px;transition:transform 0.2s;flex-shrink:0;margin-left:10px}
+.faq-a{
+  display:none;padding:12px 16px 14px;
+  font-size:12px;color:var(--text2);line-height:1.75;
+  border-top:1px solid var(--border2);
+}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-arrow{transform:rotate(45deg)}
+
+/* ======= CTA ======= */
+.cta-section{
+  background:radial-gradient(ellipse at 50% 0%,rgba(21,101,255,0.14) 0%,transparent 65%),var(--bg2);
+  padding:52px 22px;text-align:center;
+}
+.cta-icon{font-size:44px;margin-bottom:16px}
+.cta-title{font-size:26px;font-weight:900;line-height:1.2;margin-bottom:12px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta-sub{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.65}
+
+/* ======= FOOTER ======= */
+footer{background:var(--bg);border-top:1px solid var(--border2);padding:28px 20px;text-align:center}
+.foot-logo{font-size:18px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.foot-sub{font-size:11px;color:var(--text2);margin-bottom:18px}
+.foot-links{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;margin-bottom:18px}
+.foot-links a{font-size:12px;color:var(--text2);text-decoration:none;font-weight:500}
+.foot-copy{font-size:11px;color:var(--text3)}
+
+/* ======= MODAL ======= */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
+  z-index:500;align-items:flex-end;justify-content:center;
+}
+.modal-overlay.active{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);border-radius:24px 24px 0 0;
+  padding:20px 20px 40px;width:100%;max-width:430px;
+  animation:sheetUp 0.3s ease both;
+}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:20px}
+.modal .s-field input{margin-bottom:0}
+.modal-info{background:rgba(21,101,255,0.07);border:1px solid rgba(21,101,255,0.18);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:16px}
+.modal-info strong{color:var(--blue-light)}
+
+/* ======= TOAST ======= */
+.toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:11px 18px;font-size:13px;font-weight:600;z-index:9999;
+  transition:transform 0.3s ease;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,201,122,0.4);color:var(--green)}
+.toast.error{border-color:rgba(255,61,90,0.4);color:var(--red)}
+.toast.info{border-color:rgba(21,101,255,0.4);color:var(--blue-light)}
+
+/* Section divider */
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(21,101,255,0.2),transparent);margin:0}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- Plan Detail Sheet -->
+<div class="plan-detail-overlay" id="planDetailOverlay">
+  <div class="plan-detail-sheet" id="planDetailSheet" style="position:relative">
+    <div class="sheet-close" onclick="closePlanDetail()">&#x2715;</div>
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-plan-name" id="sd-name"></div>
+      <div class="sheet-plan-sub">Tous les détails de votre plan</div>
+    </div>
+    <div class="sheet-hero-price">
+      <div class="shp-label">Investissement</div>
+      <div class="shp-amount" id="sd-price"></div>
+      <div class="shp-usdt">USDT · TRC20</div>
+    </div>
+    <div class="sheet-stats-grid">
+      <div class="sstat">
+        <div class="sstat-icon">&#128197;</div>
+        <div class="sstat-val b" id="sd-days"></div>
+        <div class="sstat-label">Durée</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat-icon">&#128200;</div>
+        <div class="sstat-val g" id="sd-daily"></div>
+        <div class="sstat-label">Profit / Jour</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat-icon">&#128176;</div>
+        <div class="sstat-val g" id="sd-total"></div>
+        <div class="sstat-label">Profit Total</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat-icon">&#127942;</div>
+        <div class="sstat-val o" id="sd-fee"></div>
+        <div class="sstat-label">Frais / Samedi</div>
+      </div>
+    </div>
+    <div class="sheet-timeline">
+      <div class="stl-title">Progression du plan</div>
+      <div class="stl-bar"><div class="stl-fill" id="sd-bar" style="--w:100%"></div></div>
+      <div class="stl-labels"><span>Jour 1</span><span id="sd-end-day"></span></div>
+    </div>
+    <div class="sheet-weekly">
+      <div class="weekly-title">Retraits chaque Samedi</div>
+      <div id="sd-weekly-rows"></div>
+    </div>
+    <div class="sheet-btn">
+      <button onclick="goToApp()">Activer ce Plan &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- Password Modal -->
+<div class="modal-overlay" id="modal-pass">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128274; Changer le mot de passe</div>
+    <div class="modal-sub">Entrez votre ancien et nouveau mot de passe</div>
+    <div class="s-field"><label>Ancien mot de passe</label><input type="password" placeholder="••••••••"></div>
+    <div class="s-field"><label>Nouveau mot de passe</label><input type="password" placeholder="••••••••"></div>
+    <div class="s-field"><label>Confirmer</label><input type="password" placeholder="••••••••"></div>
+    <button class="s-btn" onclick="closeModal('modal-pass');showToast('Mot de passe modifié!','success')">Enregistrer</button>
+  </div>
+</div>
+
+<!-- 2FA Modal -->
+<div class="modal-overlay" id="modal-2fa">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128737; Authentification 2FA</div>
+    <div class="modal-sub">Sécurisez votre compte avec une double authentification</div>
+    <div class="modal-info"><strong>Comment ça marche:</strong> Un code sera envoyé à votre email à chaque connexion.</div>
+    <div class="s-field"><label>Votre Email</label><input type="email" placeholder="votre@email.com"></div>
+    <button class="s-btn" onclick="closeModal('modal-2fa');showToast('2FA activé!','success')">Activer la 2FA</button>
+  </div>
+</div>
+
+<!-- Notification Modal -->
+<div class="modal-overlay" id="modal-notif">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128276; Notifications</div>
+    <div class="modal-sub">Choisissez quelles notifications recevoir</div>
+    <div class="toggle-row"><div class="tgl-info"><div class="tgl-label">Profits quotidiens</div><div class="tgl-sub">Rappel chaque jour</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="toggle-row"><div class="tgl-info"><div class="tgl-label">Retraits Samedi</div><div class="tgl-sub">Rappel chaque Samedi</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="toggle-row"><div class="tgl-info"><div class="tgl-label">Nouveaux membres équipe</div><div class="tgl-sub">Quand un ami s'inscrit</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="toggle-row" style="border:none"><div class="tgl-info"><div class="tgl-label">Annonces PAWINS</div><div class="tgl-sub">Informations importantes</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <button class="s-btn" style="margin-top:16px" onclick="closeModal('modal-notif');showToast('Préférences enregistrées!','success')">Enregistrer</button>
+  </div>
+</div>
+
+<!-- Language Modal -->
+<div class="modal-overlay" id="modal-lang">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#127760; Langue</div>
+    <div class="modal-sub">Choisissez votre langue préférée</div>
+    <div class="s-field">
+      <select id="lang-select">
+        <option value="fr" selected>Français</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="pt">Português</option>
+      </select>
+    </div>
+    <button class="s-btn" onclick="closeModal('modal-lang');showToast('Langue mise à jour!','success')">Enregistrer</button>
+  </div>
+</div>
+
+<!-- Support Modal -->
+<div class="modal-overlay" id="modal-support">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128172; Support</div>
+    <div class="modal-sub">Notre équipe est disponible 24h/24</div>
+    <div class="modal-info"><strong>Temps de réponse:</strong> Moins de 2 heures en général.</div>
+    <div class="s-field"><label>Sujet</label><input type="text" placeholder="Ex: Problème de retrait"></div>
+    <div class="s-field"><label>Message</label><input type="text" placeholder="Décrivez votre problème..."></div>
+    <button class="s-btn" onclick="closeModal('modal-support');showToast('Message envoyé!','success')">Envoyer</button>
+  </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal-overlay" id="modal-about">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#8505; À propos de PAWINS</div>
+    <div class="modal-sub">Version 1.0.0</div>
+    <div class="modal-info">
+      <strong>PAWINS</strong> est une plateforme d'investissement internationale spécialisée dans les plans VIP USDT.<br><br>
+      Notre mission: offrir des investissements transparents, sécurisés et rentables à tous.
+    </div>
+    <button class="s-btn outline" onclick="closeModal('modal-about')">Fermer</button>
+  </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128465; Supprimer le compte</div>
+    <div class="modal-sub">Cette action est irréversible</div>
+    <div class="modal-info">Tous vos données, profits et historique seront définitivement supprimés. Votre solde doit être à $0 avant suppression.</div>
+    <div class="s-field"><label>Tapez "SUPPRIMER" pour confirmer</label><input type="text" placeholder="SUPPRIMER" id="delete-confirm"></div>
+    <button class="s-btn danger" onclick="confirmDelete()">Supprimer définitivement</button>
+  </div>
+</div>
+
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal" style="display:none;align-items:center;justify-content:center;padding:20px">
+  <div class="modal" style="border-radius:20px;max-width:400px">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:52px;height:52px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:white;margin:0 auto 10px;box-shadow:0 0 20px rgba(21,101,255,0.5)">P</div>
+      <div style="font-size:20px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent">PAWINS</div>
+    </div>
+    <div style="display:flex;background:var(--bg3);border-radius:10px;padding:3px;margin-bottom:20px">
+      <div onclick="switchAuth('login')" id="atab-login" style="flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:var(--blue);color:white;transition:all 0.2s">Se connecter</div>
+      <div onclick="switchAuth('register')" id="atab-reg" style="flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);transition:all 0.2s">S'inscrire</div>
+    </div>
+    <div id="login-form">
+      <div class="s-field"><label>Email</label><input type="email" placeholder="votre@email.com" id="l-email"></div>
+      <div class="s-field"><label>Mot de passe</label><input type="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" id="l-pass"></div>
+      <button class="s-btn" onclick="doLogin()">Se connecter</button>
+    </div>
+    <div id="reg-form" style="display:none">
+      <div class="s-field"><label>Nom</label><input type="text" placeholder="Votre nom" id="r-nom"></div>
+      <div class="s-field"><label>Pr&#233;nom</label><input type="text" placeholder="Votre pr&#233;nom" id="r-prenom"></div>
+      <div class="s-field"><label>Email</label><input type="email" placeholder="votre@email.com" id="r-email"></div>
+      <div class="s-field"><label>Mot de passe</label><input type="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" id="r-pass"></div>
+      <button class="s-btn" onclick="doRegister()">Cr&#233;er mon compte</button>
+    </div>
+    <button class="s-btn outline" style="margin-top:10px" onclick="closeLoginModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- RECHARGE MODAL -->
+<!-- RECHARGE MODAL -->
+<div class="modal-overlay" id="modal-recharge">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#11014; Recharger USDT</div>
+    <div class="modal-sub">Choisissez votre r&eacute;seau et envoyez vos USDT</div>
+
+    <!-- Network tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <div onclick="selectNetwork('bep20')" id="net-bep20" style="flex:1;text-align:center;padding:9px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;background:var(--blue);color:white;border:1px solid var(--blue);transition:all 0.2s">BEP20 (BNB)</div>
+      <div onclick="selectNetwork('trc20')" id="net-trc20" style="flex:1;text-align:center;padding:9px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--text2);border:1px solid var(--border);transition:all 0.2s">TRC20 (TRON)</div>
+    </div>
+
+    <!-- Address box -->
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:700" id="rc-network-label">R&eacute;seau: BEP20 (BNB Chain)</div>
+      <div style="font-size:12px;color:var(--blue-light);word-break:break-all;line-height:1.5;margin-bottom:10px;font-weight:600" id="rc-address">0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396</div>
+      <button onclick="copyAddress()" style="width:100%;background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.3);border-radius:8px;padding:9px;color:var(--blue-light);font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s">&#128203; Copier l'adresse</button>
+    </div>
+
+    <div class="modal-info"><strong>Minimum:</strong> $10 USDT &nbsp;|&nbsp; <strong>Confirmation:</strong> ~30 min</div>
+    <div class="s-field"><label>Montant envoy&eacute; (USDT)</label><input type="number" placeholder="Ex: 25" id="rc-amount"></div>
+    <div class="s-field"><label>Hash de transaction</label><input type="text" placeholder="Collez le hash de transaction" id="rc-hash"></div>
+    <button class="s-btn" onclick="submitRecharge()">Confirmer le d&eacute;p&ocirc;t</button>
+  </div>
+</div>
+
+<!-- RETRAIT MODAL -->
+<!-- RETRAIT MODAL -->
+<div class="modal-overlay" id="modal-retrait">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#11015; Demande de Retrait</div>
+    <div class="modal-sub">Les retraits s'effectuent chaque Samedi uniquement</div>
+    <div class="modal-info">
+      <strong>R&eacute;seau:</strong> BEP20 (BNB Chain) uniquement<br>
+      <strong>Minimum:</strong> $10 USDT<br>
+      <strong>Jour:</strong> Chaque Samedi
+    </div>
+    <div class="s-field">
+      <label>Votre adresse BEP20 (BNB)</label>
+      <input type="text" placeholder="0x... (adresse BEP20)" id="rt-addr">
+    </div>
+    <div class="s-field">
+      <label>Montant (minimum $10)</label>
+      <input type="number" placeholder="Ex: 10" id="rt-amount">
+    </div>
+    <button class="s-btn" onclick="submitRetrait()">Soumettre la demande</button>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo-wrap">
+    <div class="logo-mark">P</div>
+    <div class="nav-logo-text">PAWINS</div>
+  </div>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="goToApp()">Commencer &rarr;</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-badge"><div class="live-dot"></div>Plateforme Active</div>
+  <div class="hero-main-logo">
+    <div class="hero-logo-ring">
+      <div class="hero-logo-inner">
+        <div class="hero-logo-letter">P</div>
+      </div>
+    </div>
+    <div class="hero-logo-name">PAWINS</div>
+  </div>
+  <p class="hero-title">Investissez en USDT, collectez vos profits chaque Samedi. Simple, sécurisé, rentable.</p>
+  <div class="hero-cta">
+    <button class="btn-cta-main" onclick="goToApp()">Commencer maintenant</button>
+    <button class="btn-cta-sec" onclick="scrollToId('plans')">Voir les plans</button>
+
+  <!-- Quick action buttons -->
+  <div style="display:flex;gap:10px;margin-top:16px;margin-bottom:0;position:relative;z-index:1;animation:fadeInUp 1s ease both 0.35s">
+    <button onclick="openRecharge()" style="flex:1;padding:13px;background:rgba(0,201,122,0.12);border:1px solid rgba(0,201,122,0.3);border-radius:12px;color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s">&#11014; Recharger</button>
+    <button onclick="openRetrait()" style="flex:1;padding:13px;background:rgba(255,61,90,0.1);border:1px solid rgba(255,61,90,0.25);border-radius:12px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;transition:all 0.2s">&#11015; Retrait</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-val">5</div><div class="hstat-label">Plans VIP</div></div>
+    <div class="hstat"><div class="hstat-val">USDT</div><div class="hstat-label">Devise</div></div>
+    <div class="hstat"><div class="hstat-val">Sam.</div><div class="hstat-label">Retraits</div></div>
+    <div class="hstat"><div class="hstat-val">24/7</div><div class="hstat-label">Support</div></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="ticker-item">VIP 1 &mdash; $25 &mdash; $2/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 2 &mdash; $40 &mdash; $3.20/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 3 &mdash; $50 &mdash; $4.20/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 4 &mdash; $60 &mdash; $6/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 5 &mdash; $80 &mdash; $8/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">Retraits chaque Samedi</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">USDT TRC20 s&eacute;curis&eacute;</div><div class="ticker-sep">|</div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item">VIP 1 &mdash; $25 &mdash; $2/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 2 &mdash; $40 &mdash; $3.20/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 3 &mdash; $50 &mdash; $4.20/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 4 &mdash; $60 &mdash; $6/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">VIP 5 &mdash; $80 &mdash; $8/jour</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">Retraits chaque Samedi</div><div class="ticker-sep">|</div>
+    <div class="ticker-item">USDT TRC20 s&eacute;curis&eacute;</div><div class="ticker-sep">|</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section alt" id="how">
+  <div class="eyebrow">Comment ça marche</div>
+  <div class="sec-title">3 étapes simples</div>
+  <p class="sec-sub">De l'inscription au premier retrait, tout est simple et rapide.</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div><div class="step-title">Créez votre compte</div><div class="step-desc">Inscrivez-vous gratuitement avec nom, prénom et email. Confirmation instantanée.</div></div></div>
+    <div class="step"><div class="step-num">2</div><div><div class="step-title">Choisissez un plan VIP</div><div class="step-desc">Sélectionnez parmi 5 plans. Déposez vos USDT via TRC20 et activez votre plan immédiatement.</div></div></div>
+    <div class="step"><div class="step-num">3</div><div><div class="step-title">Collectez chaque Samedi</div><div class="step-desc">Vos profits s'accumulent jour après jour. Retirez chaque Samedi (minimum $10 USDT).</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BASSIN / PLANS -->
+<section class="section" id="plans">
+  <div class="eyebrow">Bassin d'investissement</div>
+  <div class="sec-title">Nos Plans VIP</div>
+  <p class="sec-sub">Cliquez sur un plan pour voir tous les détails et la simulation de profits.</p>
+  <div class="plans-list" id="plans-list"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section class="section alt" id="team">
+  <div class="eyebrow">Notre Équipe</div>
+  <div class="sec-title">L'équipe PAWINS</div>
+  <p class="sec-sub">Une équipe de professionnels dédiée à votre réussite financière.</p>
+  <div class="team-carousel">
+    <div class="team-track" id="team-track"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EQUIPE TABLES -->
+<section class="section" id="equipe">
+  <div class="eyebrow">Espace Équipe</div>
+  <div class="sec-title">Tableau de bord Équipe</div>
+  <p class="sec-sub">Suivez vos membres, revenus et retraits d'équipe en temps réel.</p>
+
+  <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px">Membres de l'équipe</div>
+  <div class="table-wrap">
+    <div class="table-head"><div class="th">Membre</div><div class="th">Plan</div><div class="th">Statut</div><div class="th">Rejoint</div></div>
+    <div class="table-body">
+      <div class="table-row"><div class="td">Jean M.</div><div class="td b">VIP 2</div><div class="td g">Actif</div><div class="td">08/06</div></div>
+      <div class="table-row"><div class="td">Marie A.</div><div class="td b">VIP 3</div><div class="td g">Actif</div><div class="td">07/06</div></div>
+      <div class="table-row"><div class="td">Paul H.</div><div class="td" style="color:var(--text2)">Aucun</div><div class="td" style="color:var(--text2)">Inactif</div><div class="td">09/06</div></div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-top:20px">Revenus d'équipe</div>
+  <div class="table-wrap">
+    <div class="table-head"><div class="th">Membre</div><div class="th">Plan</div><div class="th">Commission</div><div class="th">Date</div></div>
+    <div class="table-body">
+      <div class="table-row"><div class="td">Jean M.</div><div class="td">VIP 2</div><div class="td g">+$1.20</div><div class="td">08/06</div></div>
+      <div class="table-row"><div class="td">Marie A.</div><div class="td">VIP 3</div><div class="td g">+$1.50</div><div class="td">07/06</div></div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-top:20px">Retraits d'équipe</div>
+  <div class="table-wrap">
+    <div class="table-head"><div class="th">Membre</div><div class="th">Montant</div><div class="th">Statut</div><div class="th">Samedi</div></div>
+    <div class="table-body">
+      <div class="table-row"><div class="td">Jean M.</div><div class="td o">$16.00</div><div class="td g">Payé</div><div class="td">07/06</div></div>
+      <div class="table-row"><div class="td">Marie A.</div><div class="td o">$21.00</div><div class="td" style="color:var(--gold)">En attente</div><div class="td">14/06</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section class="section alt" id="features">
+  <div class="eyebrow">Pourquoi PAWINS</div>
+  <div class="sec-title">Nos Avantages</div>
+  <p class="sec-sub">Une plateforme construite pour la performance et la sécurité.</p>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-icon-wrap">&#128274;</div><div class="feat-title">Sécurisé</div><div class="feat-desc">USDT TRC20 vérifiés par hash de transaction.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">&#9889;</div><div class="feat-title">Rapide</div><div class="feat-desc">Activation immédiate après confirmation.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">&#128197;</div><div class="feat-title">Retraits Sam.</div><div class="feat-desc">Collectez vos profits chaque Samedi.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">&#128101;</div><div class="feat-title">Parrainage</div><div class="feat-desc">Commissions sur chaque plan de vos filleuls.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">&#128202;</div><div class="feat-title">Transparent</div><div class="feat-desc">Historique complet accessible à tout moment.</div></div>
+    <div class="feat-card"><div class="feat-icon-wrap">&#127758;</div><div class="feat-title">International</div><div class="feat-desc">Disponible dans le monde entier, 24h/24.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- REFERRAL -->
+<section class="section" id="referral">
+  <div class="eyebrow">Parrainage</div>
+  <div class="sec-title">Gagnez en invitant</div>
+  <div class="ref-card">
+    <div class="ref-orb"></div>
+    <div class="ref-icon-wrap">&#128279;</div>
+    <div class="ref-title">Programme de Parrainage</div>
+    <p class="ref-desc">Partagez votre lien unique. Pour chaque ami qui achète un plan, vous recevez une commission automatique.</p>
+    <div class="ref-rows">
+      <div class="ref-row"><span class="rr-plan">VIP 1</span><span class="rr-pct">3%</span><span class="rr-earn">= $0.75</span></div>
+      <div class="ref-row"><span class="rr-plan">VIP 2</span><span class="rr-pct">3%</span><span class="rr-earn">= $1.20</span></div>
+      <div class="ref-row"><span class="rr-plan">VIP 3</span><span class="rr-pct">3%</span><span class="rr-earn">= $1.50</span></div>
+      <div class="ref-row"><span class="rr-plan">VIP 4</span><span class="rr-pct">4%</span><span class="rr-earn">= $2.40</span></div>
+      <div class="ref-row"><span class="rr-plan">VIP 5</span><span class="rr-pct">4%</span><span class="rr-earn">= $3.20</span></div>
+    </div>
+    <button class="btn-cta-main" style="width:100%" onclick="goToApp()">Rejoindre &amp; Parrainer</button>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TESTIMONIALS -->
+<section class="section alt" id="testimonials">
+  <div class="eyebrow">Témoignages</div>
+  <div class="sec-title">Nos membres témoignent</div>
+  <div class="testi-list">
+    <div class="testi-card"><div class="testi-top"><div class="testi-av">J</div><div><div class="testi-name">Jean-Marc K.</div><div class="testi-plan">VIP 2 — Membre actif</div></div><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div><div class="testi-text">"Chaque Samedi je reçois mes profits sans problème. Plateforme très sérieuse, je recommande!"</div></div>
+    <div class="testi-card"><div class="testi-top"><div class="testi-av">M</div><div><div class="testi-name">Marie-Ange D.</div><div class="testi-plan">VIP 3 — Membre actif</div></div><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div><div class="testi-text">"Le parrainage m'apporte des commissions en plus. J'ai 6 filleuls actifs. Excellent système!"</div></div>
+    <div class="testi-card"><div class="testi-top"><div class="testi-av">P</div><div><div class="testi-name">Pierre L.</div><div class="testi-plan">VIP 1 — Nouveau membre</div></div><div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div></div><div class="testi-text">"Parfait pour débuter. Investissement de $25 et profits dès la première semaine. Très satisfait!"</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="eyebrow">FAQ</div>
+  <div class="sec-title">Questions fréquentes</div>
+  <div class="faq-list">
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Comment déposer des USDT? <span class="faq-arrow">+</span></div><div class="faq-a">Allez dans "Recharger", copiez notre adresse TRC20, envoyez vos USDT et entrez le hash de transaction. Activation sous 30 minutes.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Quand puis-je retirer? <span class="faq-arrow">+</span></div><div class="faq-a">Les retraits s'effectuent chaque Samedi uniquement. Minimum $10 USDT. Vos profits s'accumulent quotidiennement.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Puis-je avoir plusieurs plans? <span class="faq-arrow">+</span></div><div class="faq-a">Un plan actif par compte à la fois. Une fois terminé, vous pouvez en choisir un nouveau, ou un plan supérieur.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Comment fonctionne le parrainage? <span class="faq-arrow">+</span></div><div class="faq-a">Partagez votre lien unique. Quand un ami achète un plan, vous recevez automatiquement 3 à 4% du montant du plan.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Quel réseau USDT utiliser? <span class="faq-arrow">+</span></div><div class="faq-a">Utilisez uniquement TRC20 (réseau TRON). N'envoyez jamais via ERC20 ou BEP20, vos fonds seraient définitivement perdus.</div></div>
+    <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Mon investissement est-il sécurisé? <span class="faq-arrow">+</span></div><div class="faq-a">Toutes les transactions sont vérifiées via hash blockchain. Votre compte est protégé par mot de passe et optionnellement par 2FA.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SETTINGS -->
+<section class="section alt" id="settings">
+  <div class="eyebrow">Paramètres</div>
+  <div class="sec-title">Mon Compte</div>
+  <p class="sec-sub">Gérez votre compte, sécurité et préférences.</p>
+  <div class="settings-list">
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-pass')">
+        <div class="setting-left"><div class="setting-icon-wrap">&#128274;</div><div><div class="setting-title">Changer le mot de passe</div><div class="setting-sub">Modifier votre mot de passe actuel</div></div></div>
+        <div class="setting-arrow">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-2fa')">
+        <div class="setting-left"><div class="setting-icon-wrap">&#128737;</div><div><div class="setting-title">Authentification 2FA</div><div class="setting-sub">Double sécurité par email</div></div></div>
+        <div class="setting-arrow">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-notif')">
+        <div class="setting-left"><div class="setting-icon-wrap">&#128276;</div><div><div class="setting-title">Notifications</div><div class="setting-sub">Gérer les alertes et rappels</div></div></div>
+        <div class="setting-arrow">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-lang')">
+        <div class="setting-left"><div class="setting-icon-wrap">&#127760;</div><div><div class="setting-title">Langue</div><div class="setting-sub">Français sélectionné</div></div></div>
+        <div class="setting-arrow">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-support')">
+        <div class="setting-left"><div class="setting-icon-wrap">&#128172;</div><div><div class="setting-title">Support</div><div class="setting-sub">Contacter notre équipe 24h/24</div></div></div>
+        <div class="setting-arrow">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-about')">
+        <div class="setting-left"><div class="setting-icon-wrap">&#8505;</div><div><div class="setting-title">À propos</div><div class="setting-sub">Version 1.0.0 — PAWINS</div></div></div>
+        <div class="setting-arrow">&#x203A;</div>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-trigger" onclick="openModal('modal-delete')" style="border-color:rgba(255,61,90,0.2)">
+        <div class="setting-left"><div class="setting-icon-wrap" style="background:rgba(255,61,90,0.1);border-color:rgba(255,61,90,0.2)">&#128465;</div><div><div class="setting-title" style="color:var(--red)">Supprimer le compte</div><div class="setting-sub">Action irréversible</div></div></div>
+        <div class="setting-arrow" style="color:var(--red)">&#x203A;</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-icon">&#128640;</div>
+  <div class="cta-title">Prêt à commencer?</div>
+  <p class="cta-sub">Rejoignez PAWINS aujourd'hui et générez des revenus passifs en USDT chaque semaine.</p>
+  <button class="btn-cta-main" onclick="goToApp()" style="padding:16px 32px;font-size:15px">Créer mon compte gratuitement &rarr;</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">PAWINS</div>
+  <div class="foot-sub">Plateforme d'Investissement USDT</div>
+  <div class="foot-links">
+    <a href="#how">Comment ça marche</a>
+    <a href="#plans">Plans VIP</a>
+    <a href="#equipe">Équipe</a>
+    <a href="#faq">FAQ</a>
+    <a href="#settings">Paramètres</a>
+  </div>
+  <div class="foot-copy">&copy; 2026 PAWINS. Tous droits réservés.</div>
+</footer>
+
+<script>
+// ===== DATA =====
+const plans = [
+  {id:1,name:'VIP 1',color:'#3B82F6',bg:'linear-gradient(135deg,#1D4ED8,#3B82F6)',price:25,days:22,daily:2.00,total:44.00,fee:4.00},
+  {id:2,name:'VIP 2',color:'#8B5CF6',bg:'linear-gradient(135deg,#6D28D9,#8B5CF6)',price:40,days:30,daily:3.20,total:96.00,fee:6.00,featured:true},
+  {id:3,name:'VIP 3',color:'#10B981',bg:'linear-gradient(135deg,#065F46,#10B981)',price:50,days:38,daily:4.20,total:159.60,fee:8.00},
+  {id:4,name:'VIP 4',color:'#F59E0B',bg:'linear-gradient(135deg,#92400E,#F59E0B)',price:60,days:45,daily:6.00,total:270.00,fee:10.00},
+  {id:5,name:'VIP 5',color:'#F43F5E',bg:'linear-gradient(135deg,#9F1239,#F43F5E)',price:80,days:55,daily:8.00,total:440.00,fee:12.00},
+];
+
+const teamMembers = [
+  {name:'Alex M.',role:'Fondateur'},
+  {name:'Sophie R.',role:'Directrice'},
+  {name:'Marc T.',role:'Analyste'},
+  {name:'Julie P.',role:'Support'},
+  {name:'Kevin D.',role:'Tech Lead'},
+  {name:'Sarah N.',role:'Finance'},
+  {name:'Lucas B.',role:'Marketing'},
+  {name:'Emma V.',role:'Designer'},
+];
+
+// ===== PLANS =====
+function renderPlans(){
+  const c=document.getElementById('plans-list');
+  c.innerHTML=plans.map(p=>`
+    <div class="plan-card${p.featured?' featured':''}" onclick="openPlanDetail(${p.id})">
+      ${p.featured?'<div class="plan-pop">Populaire</div>':''}
+      <div class="plan-head">
+        <div class="plan-name">
+          <div class="plan-icon" style="background:${p.bg}">${p.id}</div>
+          ${p.name}
+        </div>
+        <div class="plan-price">$${p.price}<span>/plan</span></div>
+      </div>
+      <div class="plan-grid">
+        <div class="plan-cell"><div class="plan-cell-label">Dur&eacute;e</div><div class="plan-cell-val">${p.days} jours</div></div>
+        <div class="plan-cell"><div class="plan-cell-label">Profit/jour</div><div class="plan-cell-val g">$${p.daily.toFixed(2)}</div></div>
+        <div class="plan-cell"><div class="plan-cell-label">Profit Total</div><div class="plan-cell-val g">$${p.total.toFixed(2)}</div></div>
+        <div class="plan-cell"><div class="plan-cell-label">Frais Samedi</div><div class="plan-cell-val o">$${p.fee.toFixed(2)}</div></div>
+      </div>
+      <div class="plan-foot">
+        <button class="btn-plan" style="background:${p.bg}">Voir les d&eacute;tails &rarr;</button>
+        <div class="plan-detail-hint">Appuyez pour voir la simulation compl&egrave;te</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== PLAN DETAIL =====
+function openPlanDetail(id){
+  const p=plans.find(x=>x.id===id);
+  document.getElementById('sd-name').textContent=p.name;
+  document.getElementById('sd-price').textContent='$'+p.price;
+  document.getElementById('sd-days').textContent=p.days+' jours';
+  document.getElementById('sd-daily').textContent='$'+p.daily.toFixed(2);
+  document.getElementById('sd-total').textContent='$'+p.total.toFixed(2);
+  document.getElementById('sd-fee').textContent='$'+p.fee.toFixed(2);
+  document.getElementById('sd-end-day').textContent='Jour '+p.days;
+  // Weekly rows
+  let rows='';
+  const weeks=Math.ceil(p.days/7);
+  for(let w=1;w<=weeks;w++){
+    const daysInWeek=Math.min(7,p.days-(w-1)*7);
+    const profit=(daysInWeek*p.daily).toFixed(2);
+    rows+=`<div class="weekly-row"><div class="wr-label">Samedi ${w} (${daysInWeek} jours)</div><div class="wr-val">+$${profit}</div></div>`;
+  }
+  document.getElementById('sd-weekly-rows').innerHTML=rows;
+  document.getElementById('planDetailOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+
+function closePlanDetail(){
+  document.getElementById('planDetailOverlay').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+// ===== TEAM =====
+function renderTeam(){
+  const track=document.getElementById('team-track');
+  const doubled=[...teamMembers,...teamMembers];
+  const colors=['#1565FF','#0A45CC','#1976D2','#1565FF','#0D47A1','#1A6BFF','#2979FF','#1565FF'];
+  track.innerHTML=doubled.map((m,i)=>`
+    <div class="team-member">
+      <div class="team-avatar-wrap">
+        <div class="team-avatar" style="background:linear-gradient(135deg,${colors[i%colors.length]},${colors[(i+2)%colors.length]})">
+          <svg viewBox="0 0 72 72" fill="none" style="width:100%;height:100%">
+            <!-- Silhouette professionnelle -->
+            <circle cx="36" cy="22" r="12" fill="rgba(255,255,255,0.9)"/>
+            <path d="M14 60 C14 44 22 38 36 38 C50 38 58 44 58 60Z" fill="rgba(255,255,255,0.9)"/>
+            <!-- Jersey PAWINS -->
+            <rect x="22" y="38" width="28" height="16" rx="3" fill="rgba(255,255,255,0.2)"/>
+            <text x="36" y="49" text-anchor="middle" fill="white" font-size="4.5" font-weight="900" font-family="Inter,sans-serif" letter-spacing="0.3">PAWINS</text>
+          </svg>
+        </div>
+      </div>
+      <div class="team-name">${m.name}</div>
+      <div class="team-role">${m.role}</div>
+    </div>
+  `).join('');
+}
+
+// ===== MODALS =====
+function openModal(id){document.getElementById(id).classList.add('active');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('active');document.body.style.overflow=''}
+
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',function(e){if(e.target===this){this.classList.remove('active');document.body.style.overflow=''}})
+});
+document.getElementById('planDetailOverlay').addEventListener('click',function(e){if(e.target===this)closePlanDetail()});
+
+// ===== FAQ =====
+function toggleFaq(el){
+  const open=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f=>f.classList.remove('open'));
+  if(!open)el.classList.add('open');
+}
+
+// ===== SETTINGS ACCORDION =====
+function toggleSetting(el){
+  el.parentElement.classList.toggle('open');
+}
+
+
+function switchAuth(tab){
+  document.getElementById('login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('reg-form').style.display=tab==='register'?'block':'none';
+  document.getElementById('atab-login').style.background=tab==='login'?'var(--blue)':'transparent';
+  document.getElementById('atab-login').style.color=tab==='login'?'white':'var(--text2)';
+  document.getElementById('atab-reg').style.background=tab==='register'?'var(--blue)':'transparent';
+  document.getElementById('atab-reg').style.color=tab==='register'?'white':'var(--text2)';
+}
+function doLogin(){
+  const e=document.getElementById('l-email').value;
+  if(!e){showToast('Entrez votre email','error');return;}
+  closeLoginModal();showToast('Connexion r\u00e9ussie!','success');
+}
+function doRegister(){
+  const n=document.getElementById('r-nom').value,e=document.getElementById('r-email').value;
+  if(!n||!e){showToast('Remplissez tous les champs','error');return;}
+  closeLoginModal();showToast('Compte cr\u00e9\u00e9 avec succ\u00e8s!','success');
+}
+function openRecharge(){document.getElementById('modal-recharge').classList.add('active');}
+var currentNetwork='bep20';
+var addresses={bep20:'0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396',trc20:'TYDHcrwhGkRH68u2fWat72iJoNFqhoadHy'};
+var networkLabels={bep20:'Réseau: BEP20 (BNB Chain)',trc20:'Réseau: TRC20 (TRON)'};
+function selectNetwork(net){
+  currentNetwork=net;
+  document.getElementById('rc-address').textContent=addresses[net];
+  document.getElementById('rc-network-label').textContent=networkLabels[net];
+  document.getElementById('net-bep20').style.background=net==='bep20'?'var(--blue)':'transparent';
+  document.getElementById('net-bep20').style.color=net==='bep20'?'white':'var(--text2)';
+  document.getElementById('net-bep20').style.borderColor=net==='bep20'?'var(--blue)':'var(--border)';
+  document.getElementById('net-trc20').style.background=net==='trc20'?'var(--blue)':'transparent';
+  document.getElementById('net-trc20').style.color=net==='trc20'?'white':'var(--text2)';
+  document.getElementById('net-trc20').style.borderColor=net==='trc20'?'var(--blue)':'var(--border)';
+}
+function copyAddress(){
+  const addr=addresses[currentNetwork];
+  navigator.clipboard.writeText(addr).catch(()=>{});
+  showToast('Adresse copiée!','success');
+}
+function openRetrait(){document.getElementById('modal-retrait').classList.add('active');}
+function submitRecharge(){
+  const a=document.getElementById('rc-amount').value,h=document.getElementById('rc-hash').value;
+  if(!a||a<10){showToast('Minimum $10 USDT','error');return;}
+  if(!h){showToast('Entrez le hash de transaction','error');return;}
+  closeModal('modal-recharge');showToast('D\u00e9p\u00f4t soumis! V\u00e9rification en cours.','success');
+}
+function submitRetrait(){
+  const a=document.getElementById('rt-addr').value,m=document.getElementById('rt-amount').value;
+  if(!a){showToast('Entrez votre adresse USDT','error');return;}
+  if(!m||m<10){showToast('Minimum $10 USDT','error');return;}
+  closeModal('modal-retrait');showToast('Demande soumise! Samedi prochain.','success');
+}
+// show login modal
+document.getElementById('login-modal').addEventListener('click',function(e){if(e.target===this)closeLoginModal();});
+
+// ===== CONFIRM DELETE =====
+function confirmDelete(){
+  const val=document.getElementById('delete-confirm').value;
+  if(val==='SUPPRIMER'){closeModal('modal-delete');showToast('Compte supprimé','error')}
+  else showToast('Tapez SUPPRIMER pour confirmer','error');
+}
+
+// ===== NAV =====
+function goToApp(){window.location.href='inscription.html';}
+
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+
+// ===== TOAST =====
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+
+// Close recharge/retrait modals on overlay click
+['modal-recharge','modal-retrait'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('active')});
+});
+
+// ===== INIT =====
+renderPlans();
+renderTeam();
+
+// Navbar scroll effect
+window.addEventListener('scroll',()=>{
+  const nav=document.querySelector('.navbar');
+  nav.style.background=window.scrollY>40?'rgba(4,8,15,0.96)':'rgba(4,8,15,0.82)';
+});
+
+// Scroll reveal animation
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}
+  });
+},{threshold:0.1});
+
+document.querySelectorAll('.step,.plan-card,.feat-card,.testi-card,.faq-item,.setting-item').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity 0.5s ease,transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
