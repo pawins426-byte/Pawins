@@ -1,1 +1,1010 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PAWINS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#04080F;--bg2:#080E1A;--bg3:#0D1422;
+  --blue:#1565FF;--blue2:#0A45CC;--blue-light:#4D8EFF;
+  --text:#F0F4FF;--text2:#6B7FA3;--text3:#3D4F6E;
+  --green:#00C97A;--red:#FF3D5A;--gold:#FFB300;
+  --card:#0A1020;--border:rgba(21,101,255,0.18);--border2:rgba(255,255,255,0.05);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;position:fixed;width:100%;top:0;left:0;right:0}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:0;height:0}
+
+/* ===== APP SHELL ===== */
+.app{display:flex;flex-direction:column;height:100vh}
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+
+/* ===== TAB VIEWS ===== */
+.tab-view{display:none}
+.tab-view.active{display:block}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px 10px;
+  background:var(--bg);
+  border-bottom:1px solid var(--border2);
+  position:sticky;top:0;z-index:100;
+}
+.topbar-logo{
+  font-size:20px;font-weight:900;letter-spacing:4px;
+  background:linear-gradient(135deg,#fff,var(--blue-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-notif{
+  width:34px;height:34px;background:var(--bg3);
+  border:1px solid var(--border2);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;
+}
+.topbar-avatar{
+  width:34px;height:34px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:white;cursor:pointer;
+}
+
+/* ===== CALENDAR TICKER ===== */
+.calendar-ticker{
+  background:rgba(21,101,255,0.06);
+  border-bottom:1px solid rgba(21,101,255,0.1);
+  padding:10px 0;overflow:hidden;
+}
+.calendar-track{
+  display:flex;gap:0;
+  animation:calendarScroll 14s linear infinite;
+  width:max-content;
+}
+@keyframes calendarScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.cal-day{
+  padding:6px 16px;font-size:12px;font-weight:600;
+  color:var(--text2);white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+  border-right:1px solid var(--border2);
+}
+.cal-day.today{color:var(--blue-light)}
+.cal-day.samedi{
+  color:var(--gold);font-weight:800;font-size:13px;
+  background:rgba(255,179,0,0.08);
+  animation:samediPulse 2s ease-in-out infinite;
+}
+@keyframes samediPulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.cal-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* ===== MAISON ===== */
+.home-header{padding:18px 18px 0}
+.home-greeting{font-size:12px;color:var(--text2);margin-bottom:2px}
+.home-name{font-size:18px;font-weight:800}
+
+/* Balance card */
+.balance-card{
+  margin:14px 18px;
+  background:linear-gradient(135deg,#0A1830,#0D2050);
+  border:1px solid rgba(21,101,255,0.3);
+  border-radius:20px;padding:20px;position:relative;overflow:hidden;
+}
+.balance-card::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(21,101,255,0.25) 0%,transparent 70%);
+  border-radius:50%;
+}
+.balance-label{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.balance-amount{font-size:34px;font-weight:900;margin-bottom:4px}
+.balance-amount span{color:var(--blue-light)}
+.balance-usdt{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:18px}
+.balance-actions{display:flex;gap:10px}
+.bal-btn{
+  flex:1;padding:11px 10px;border-radius:10px;border:none;
+  font-size:13px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'Inter',sans-serif;transition:all 0.2s;
+}
+.bal-btn.deposit{background:var(--blue);color:white}
+.bal-btn.withdraw{background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.12)}
+.bal-btn:active{transform:scale(0.97)}
+
+/* Stats grid */
+.stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;padding:0 18px;margin-bottom:18px;
+}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px;
+}
+.stat-icon{font-size:18px;margin-bottom:6px}
+.stat-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px}
+.stat-val{font-size:17px;font-weight:800}
+.stat-val.green{color:var(--green)}
+.stat-val.blue{color:var(--blue-light)}
+
+/* Action buttons */
+.section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 18px;margin-bottom:12px}
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 18px;margin-bottom:20px}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.action-icon{
+  width:56px;height:56px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;transition:all 0.2s;
+}
+.action-icon:active{transform:scale(0.92);background:var(--bg3)}
+.action-label{font-size:10px;color:var(--text2);text-align:center;font-weight:500}
+
+/* Team section transparent */
+.team-section{
+  margin:0 0 20px;padding:16px 0 0;
+  position:relative;
+  background:linear-gradient(to bottom,transparent,rgba(21,101,255,0.04),transparent);
+}
+.team-section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 18px;margin-bottom:14px}
+.team-scroll{overflow:hidden}
+.team-track{display:flex;gap:16px;padding:0 18px;animation:teamScroll 20s linear infinite;width:max-content}
+.team-track:hover{animation-play-state:paused}
+@keyframes teamScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.team-member{display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0;opacity:0.85}
+.team-avatar{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(21,101,255,0.3);overflow:hidden;
+}
+.team-name{font-size:11px;font-weight:700;color:var(--text2);text-align:center}
+.team-role{font-size:9px;color:var(--text3);text-align:center}
+
+/* ===== BASSIN ===== */
+.bassin-header{padding:18px 18px 0;margin-bottom:14px}
+.bassin-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.bassin-sub{font-size:12px;color:var(--text2)}
+.vip-cards{padding:0 18px;display:flex;flex-direction:column;gap:14px}
+.vip-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;cursor:pointer;
+  transition:border-color 0.2s;
+}
+.vip-card:active{transform:scale(0.99)}
+.vip-card.featured{border-color:rgba(21,101,255,0.45)}
+.vip-pop{
+  position:absolute;top:14px;right:14px;
+  background:var(--blue);color:white;font-size:9px;font-weight:800;
+  padding:3px 8px;border-radius:5px;letter-spacing:0.5px;
+}
+.vip-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 12px;border-bottom:1px solid var(--border2);
+  position:relative;
+}
+.vip-name{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.vip-icon{
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;color:white;
+}
+.vip-price{font-size:22px;font-weight:900;color:var(--blue-light)}
+.vip-price span{font-size:12px;color:var(--text2);font-weight:400}
+.vip-grid{display:grid;grid-template-columns:1fr 1fr}
+.vip-cell{padding:11px 16px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+.vip-cell:nth-child(even){border-right:none}
+.vip-cell:nth-last-child(-n+2){border-bottom:none}
+.vip-cell-label{font-size:10px;color:var(--text2);text-transform:uppercase;margin-bottom:3px}
+.vip-cell-val{font-size:14px;font-weight:700}
+.vip-cell-val.g{color:var(--green)}
+.vip-cell-val.o{color:var(--gold)}
+.vip-foot{padding:12px 18px}
+.btn-vip{
+  width:100%;padding:11px;border-radius:10px;border:none;
+  color:white;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.2s;
+}
+.vip-hint{font-size:10px;color:var(--text2);text-align:center;margin-top:7px}
+
+/* ===== EKIP ===== */
+.ekip-wrap{padding:18px}
+.ekip-hero{
+  background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));
+  border:1px solid rgba(21,101,255,0.25);border-radius:20px;
+  padding:22px 18px;text-align:center;margin-bottom:18px;
+}
+.ekip-hero h2{font-size:24px;font-weight:900;margin-bottom:4px}
+.ekip-hero p{font-size:12px;color:var(--text2);margin-bottom:14px}
+.ref-box{
+  background:rgba(0,0,0,0.3);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;color:var(--blue-light);font-weight:600;cursor:pointer;
+}
+.ekip-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.ekip-stat{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:16px;text-align:center;
+}
+.ekip-stat-val{font-size:24px;font-weight:800;color:var(--blue-light);margin-bottom:3px}
+.ekip-stat-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px}
+.comm-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.comm-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.comm-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 16px;border-bottom:1px solid var(--border2);
+}
+.comm-row:last-child{border-bottom:none}
+.comm-plan{font-size:12px;font-weight:600}
+.comm-pct{font-size:13px;font-weight:800;color:var(--green)}
+.comm-earn{font-size:11px;color:var(--text2)}
+
+/* ===== MOI ===== */
+.moi-wrap{padding:18px}
+.profile-card{
+  background:linear-gradient(135deg,#0A1830,#0D2050);
+  border:1px solid rgba(21,101,255,0.3);border-radius:20px;
+  padding:22px;text-align:center;margin-bottom:16px;
+}
+.profile-avatar{
+  width:68px;height:68px;
+  background:linear-gradient(135deg,var(--blue),var(--blue-light));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:800;color:white;margin:0 auto 12px;
+}
+.profile-name{font-size:18px;font-weight:800;margin-bottom:3px}
+.profile-email{font-size:12px;color:var(--text2);margin-bottom:10px}
+.profile-badge{
+  display:inline-block;
+  background:rgba(21,101,255,0.15);border:1px solid rgba(21,101,255,0.3);
+  color:var(--blue-light);font-size:10px;font-weight:700;
+  padding:4px 12px;border-radius:20px;letter-spacing:1px;
+}
+.info-section{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;margin-bottom:14px;
+}
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 16px;border-bottom:1px solid var(--border2);
+}
+.info-row:last-child{border-bottom:none}
+.info-left{display:flex;align-items:center;gap:10px}
+.info-icon{font-size:16px}
+.info-label{font-size:12px;color:var(--text2)}
+.info-val{font-size:12px;font-weight:600}
+.logout-btn{
+  width:100%;background:rgba(255,61,90,0.1);
+  border:1px solid rgba(255,61,90,0.25);border-radius:12px;
+  padding:13px;color:var(--red);font-size:14px;font-weight:700;
+  cursor:pointer;font-family:'Inter',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;
+  background:rgba(4,8,15,0.96);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,0.05);
+  display:flex;padding:8px 0 20px;z-index:200;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;padding:4px 0;transition:all 0.2s;
+}
+.nav-icon{font-size:22px}
+.nav-label{font-size:10px;color:var(--text2);font-weight:500}
+.nav-item.active .nav-label{color:var(--blue)}
+
+/* ===== MODALS ===== */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
+  z-index:500;align-items:flex-end;justify-content:center;
+}
+.modal-overlay.active{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:24px 24px 0 0;padding:20px 20px 40px;
+  width:100%;max-width:430px;
+  animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  max-height:85vh;overflow-y:auto;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+.modal-info{
+  background:rgba(21,101,255,0.07);border:1px solid rgba(21,101,255,0.15);
+  border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text2);
+  line-height:1.65;margin-bottom:14px;
+}
+.modal-info strong{color:var(--blue-light)}
+.m-field{margin-bottom:12px}
+.m-field label{display:block;font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:700}
+.m-field input,.m-field select{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;color:var(--text);
+  font-size:14px;outline:none;font-family:'Inter',sans-serif;transition:border-color 0.2s;
+}
+.m-field input:focus,.m-field select:focus{border-color:var(--blue)}
+.m-field input::placeholder{color:var(--text2)}
+.btn-modal{
+  width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border:none;border-radius:12px;padding:13px;color:white;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+  box-shadow:0 4px 16px rgba(21,101,255,0.35);transition:all 0.2s;
+}
+.btn-modal:active{transform:scale(0.98)}
+
+/* Network tabs */
+.net-tabs{display:flex;gap:8px;margin-bottom:14px}
+.net-tab{
+  flex:1;text-align:center;padding:9px;border-radius:10px;
+  font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;
+}
+.net-tab.active{background:var(--blue);color:white;border:1px solid var(--blue)}
+.net-tab.inactive{background:transparent;color:var(--text2);border:1px solid var(--border)}
+
+/* Address copy box */
+.addr-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-bottom:14px;
+}
+.addr-network{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-weight:700}
+.addr-text{font-size:11px;color:var(--blue-light);word-break:break-all;line-height:1.5;margin-bottom:10px;font-weight:600}
+.btn-copy{
+  width:100%;background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.25);
+  border-radius:8px;padding:8px;color:var(--blue-light);
+  font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+}
+
+/* ===== PLAN DETAIL SHEET ===== */
+.plan-sheet{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);
+  z-index:400;align-items:flex-end;justify-content:center;
+}
+.plan-sheet.active{display:flex}
+.plan-sheet-inner{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:24px 24px 0 0;width:100%;max-width:430px;
+  max-height:90vh;overflow-y:auto;padding:0 0 40px;
+  animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.ps-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:14px auto 18px}
+.ps-header{padding:0 20px 18px;border-bottom:1px solid var(--border2)}
+.ps-name{font-size:22px;font-weight:900;margin-bottom:3px}
+.ps-sub{font-size:12px;color:var(--text2)}
+.ps-price{
+  background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));
+  border:1px solid var(--border);border-radius:16px;
+  padding:18px;margin:18px 20px;text-align:center;
+}
+.ps-price-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.ps-price-val{font-size:40px;font-weight:900;color:var(--blue-light)}
+.ps-price-usdt{font-size:12px;color:var(--text2);margin-top:3px}
+.ps-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:18px}
+.ps-stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px}
+.ps-stat-icon{font-size:18px;margin-bottom:5px}
+.ps-stat-val{font-size:17px;font-weight:800;margin-bottom:2px}
+.ps-stat-val.g{color:var(--green)}
+.ps-stat-val.b{color:var(--blue-light)}
+.ps-stat-val.o{color:var(--gold)}
+.ps-stat-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px}
+.ps-weekly{padding:0 20px;margin-bottom:18px}
+.ps-weekly-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.ps-weekly-row{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:11px 14px;margin-bottom:8px;
+}
+.ps-weekly-label{font-size:12px;font-weight:600}
+.ps-weekly-val{font-size:13px;font-weight:700;color:var(--green)}
+.ps-btn{margin:0 20px}
+.ps-btn button{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:white;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Inter',sans-serif;box-shadow:0 4px 20px rgba(21,101,255,0.4);
+}
+.ps-close{
+  position:absolute;top:14px;right:16px;
+  width:30px;height:30px;background:rgba(255,255,255,0.08);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;color:var(--text2);
+}
+
+/* ===== RECU MODAL ===== */
+.recu-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:20px;margin-bottom:16px;
+  text-align:center;
+}
+.recu-logo{font-size:18px;font-weight:900;letter-spacing:3px;color:var(--blue-light);margin-bottom:4px}
+.recu-sub{font-size:10px;color:var(--text2);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+.recu-amount{font-size:36px;font-weight:900;color:var(--green);margin-bottom:4px}
+.recu-usdt{font-size:12px;color:var(--text2);margin-bottom:16px}
+.recu-divider{height:1px;background:var(--border2);margin:12px 0}
+.recu-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+.recu-label{font-size:11px;color:var(--text2)}
+.recu-val{font-size:11px;font-weight:600}
+.recu-status{
+  display:inline-block;background:rgba(255,179,0,0.15);
+  border:1px solid rgba(255,179,0,0.3);color:var(--gold);
+  font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;
+  letter-spacing:0.5px;margin-top:12px;
+}
+.recu-seal{
+  margin-top:14px;font-size:11px;color:var(--text2);
+  border-top:1px dashed var(--border);padding-top:12px;
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;top:20px;left:50%;
+  transform:translateX(-50%) translateY(-80px);
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:10px 16px;
+  font-size:13px;font-weight:600;z-index:9999;
+  transition:transform 0.3s ease;white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,201,122,0.4);color:var(--green)}
+.toast.error{border-color:rgba(255,61,90,0.4);color:var(--red)}
+.toast.info{border-color:rgba(21,101,255,0.4);color:var(--blue-light)}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- PLAN DETAIL SHEET -->
+<div class="plan-sheet" id="planSheet">
+  <div class="plan-sheet-inner" style="position:relative">
+    <div class="ps-close" onclick="closePlanSheet()">&#x2715;</div>
+    <div class="ps-handle"></div>
+    <div class="ps-header">
+      <div class="ps-name" id="ps-name"></div>
+      <div class="ps-sub">Tous les détails de votre plan</div>
+    </div>
+    <div class="ps-price">
+      <div class="ps-price-label">Investissement</div>
+      <div class="ps-price-val" id="ps-price"></div>
+      <div class="ps-price-usdt">USDT</div>
+    </div>
+    <div class="ps-stats">
+      <div class="ps-stat"><div class="ps-stat-icon">&#128197;</div><div class="ps-stat-val b" id="ps-days"></div><div class="ps-stat-label">Durée</div></div>
+      <div class="ps-stat"><div class="ps-stat-icon">&#128200;</div><div class="ps-stat-val g" id="ps-daily"></div><div class="ps-stat-label">Profit/Jour</div></div>
+      <div class="ps-stat"><div class="ps-stat-icon">&#128176;</div><div class="ps-stat-val g" id="ps-total"></div><div class="ps-stat-label">Profit Total</div></div>
+      <div class="ps-stat"><div class="ps-stat-icon">&#127942;</div><div class="ps-stat-val o" id="ps-fee"></div><div class="ps-stat-label">Frais/Samedi</div></div>
+    </div>
+    <div class="ps-weekly">
+      <div class="ps-weekly-title">Retraits chaque Samedi</div>
+      <div id="ps-weekly-rows"></div>
+    </div>
+    <div class="ps-btn"><button onclick="activatePlan()">Activer ce Plan &#8594;</button></div>
+  </div>
+</div>
+
+<!-- DEPOSIT MODAL -->
+<div class="modal-overlay" id="modal-deposit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#11014; Recharger USDT</div>
+    <div class="modal-sub">Choisissez votre réseau de dépôt</div>
+    <div class="net-tabs">
+      <div class="net-tab active" id="ntab-bep20" onclick="selectNet('bep20')">BEP20 (BNB)</div>
+      <div class="net-tab inactive" id="ntab-trc20" onclick="selectNet('trc20')">TRC20 (TRON)</div>
+    </div>
+    <div class="addr-box">
+      <div class="addr-network" id="dep-net-label">Réseau: BEP20 (BNB Chain)</div>
+      <div class="addr-text" id="dep-address">0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396</div>
+      <button class="btn-copy" onclick="copyDepAddr()">&#128203; Copier l'adresse</button>
+    </div>
+    <div class="modal-info"><strong>Minimum:</strong> $10 USDT &nbsp;|&nbsp; <strong>Confirmation:</strong> ~30 min</div>
+    <div class="m-field"><label>Montant envoyé (USDT)</label><input type="number" placeholder="Ex: 25" id="dep-amount"></div>
+    <div class="m-field"><label>Hash de transaction</label><input type="text" placeholder="Collez le hash ici" id="dep-hash"></div>
+    <button class="btn-modal" onclick="submitDeposit()">Confirmer le dépôt</button>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="modal-withdraw">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#11015; Demande de Retrait</div>
+    <div class="modal-sub">Retraits effectués chaque Samedi uniquement</div>
+    <div class="modal-info">
+      <strong>Réseau:</strong> BEP20 (BNB Chain) uniquement<br>
+      <strong>Minimum:</strong> $10 USDT<br>
+      <strong>Jour:</strong> Chaque Samedi
+    </div>
+    <div class="m-field"><label>Votre adresse BEP20</label><input type="text" placeholder="0x... adresse BEP20" id="wd-addr"></div>
+    <div class="m-field"><label>Montant (minimum $10)</label><input type="number" placeholder="Ex: 10" id="wd-amount"></div>
+    <button class="btn-modal" onclick="submitWithdraw()">Soumettre la demande</button>
+  </div>
+</div>
+
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="modal-invite">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128279; Inviter des Amis</div>
+    <div class="modal-sub">Gagnez des commissions sur chaque plan acheté</div>
+    <div class="modal-info">
+      <strong>Votre lien:</strong><br>
+      <span style="color:var(--blue-light);font-size:12px" id="invite-link">pawins.com/ref/USER123</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn-modal" onclick="copyInviteLink()">&#128203; Copier le lien</button>
+      <button class="btn-modal" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);box-shadow:none" onclick="closeModal('modal-invite')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- RECU MODAL -->
+<div class="modal-overlay" id="modal-recu">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="recu-card">
+      <div class="recu-logo">PAWINS</div>
+      <div class="recu-sub">Reçu de Retrait</div>
+      <div class="recu-amount" id="recu-amount">$0.00</div>
+      <div class="recu-usdt">USDT BEP20</div>
+      <div class="recu-divider"></div>
+      <div class="recu-row"><span class="recu-label">Nom</span><span class="recu-val" id="recu-name">—</span></div>
+      <div class="recu-row"><span class="recu-label">Date</span><span class="recu-val" id="recu-date">—</span></div>
+      <div class="recu-row"><span class="recu-label">Adresse BEP20</span><span class="recu-val" id="recu-addr" style="font-size:10px;max-width:160px;text-align:right">—</span></div>
+      <div class="recu-row"><span class="recu-label">Frais</span><span class="recu-val" style="color:var(--red)">$0.00</span></div>
+      <div class="recu-row"><span class="recu-label">Numéro</span><span class="recu-val" id="recu-num" style="color:var(--text2)">—</span></div>
+      <div class="recu-status">&#9203; EN ATTENTE — Samedi</div>
+      <div class="recu-seal">&#128274; PAWINS Investment Platform &copy; 2026</div>
+    </div>
+    <button class="btn-modal" onclick="closeModal('modal-recu')">Fermer</button>
+  </div>
+</div>
+
+<!-- SUPPORT MODAL -->
+<div class="modal-overlay" id="modal-support">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128172; Support PAWINS</div>
+    <div class="modal-sub">Choisissez votre canal d'assistance</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div onclick="openTelegram('support')" style="display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer">
+        <div style="width:44px;height:44px;background:#229ED9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px">&#9992;</div>
+        <div><div style="font-size:14px;font-weight:700">Service Client Officiel</div><div style="font-size:12px;color:var(--text2)">Réponse rapide 24h/24</div></div>
+        <div style="margin-left:auto;color:var(--text2)">&#8250;</div>
+      </div>
+      <div onclick="openTelegram('channel')" style="display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer">
+        <div style="width:44px;height:44px;background:#229ED9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px">&#128033;</div>
+        <div><div style="font-size:14px;font-weight:700">Chaîne Officielle</div><div style="font-size:12px;color:var(--text2)">Annonces et actualités</div></div>
+        <div style="margin-left:auto;color:var(--text2)">&#8250;</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP INSTALL MODAL -->
+<div class="modal-overlay" id="modal-app">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128241; Installer l'Application</div>
+    <div class="modal-sub">Accédez à PAWINS depuis votre écran d'accueil</div>
+    <div class="modal-info">
+      <strong>Sur iPhone (Safari):</strong><br>
+      1. Appuyez sur &#128944; (partager)<br>
+      2. "Sur l'écran d'accueil"<br>
+      3. "Ajouter"<br><br>
+      <strong>Sur Android (Chrome):</strong><br>
+      1. Menu &#8942;<br>
+      2. "Ajouter à l'écran d'accueil"
+    </div>
+    <button class="btn-modal" onclick="closeModal('modal-app')">Compris!</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-logo">PAWINS</div>
+    <div class="topbar-right">
+      <div class="topbar-notif" onclick="openModal('modal-support')">&#128172;</div>
+      <div class="topbar-avatar" id="tb-avatar">P</div>
+    </div>
+  </div>
+
+  <!-- CALENDAR TICKER -->
+  <div class="calendar-ticker">
+    <div class="calendar-track" id="cal-track"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="app-content">
+
+    <!-- MAISON -->
+    <div class="tab-view active" id="tab-maison">
+      <div class="home-header">
+        <div class="home-greeting">Bonjour,</div>
+        <div class="home-name" id="home-name">Utilisateur</div>
+      </div>
+
+      <div class="balance-card">
+        <div class="balance-label">Solde Total</div>
+        <div class="balance-amount">$<span id="home-balance">0.00</span></div>
+        <div class="balance-usdt">≈ <span id="home-usdt">0.00</span> USDT</div>
+        <div class="balance-actions">
+          <button class="bal-btn deposit" onclick="openModal('modal-deposit')">&#11014; Recharger</button>
+          <button class="bal-btn withdraw" onclick="openModal('modal-withdraw')">&#11015; Retrait</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">&#128101;</div><div class="stat-label">Membres Équipe</div><div class="stat-val blue" id="home-team">0</div></div>
+        <div class="stat-card"><div class="stat-icon">&#128200;</div><div class="stat-label">Revenu Équipe</div><div class="stat-val green">$<span id="home-team-rev">0.00</span></div></div>
+        <div class="stat-card"><div class="stat-icon">&#128176;</div><div class="stat-label">Revenu Total</div><div class="stat-val green">$<span id="home-total-rev">0.00</span></div></div>
+        <div class="stat-card"><div class="stat-icon">&#127942;</div><div class="stat-label">Plan Actif</div><div class="stat-val blue" id="home-plan">—</div></div>
+      </div>
+
+      <div class="section-title">Actions Rapides</div>
+      <div class="actions-grid">
+        <div class="action-btn" onclick="openModal('modal-deposit')"><div class="action-icon">&#128179;</div><div class="action-label">Recharger</div></div>
+        <div class="action-btn" onclick="openModal('modal-withdraw')"><div class="action-icon">&#128184;</div><div class="action-label">Retrait</div></div>
+        <div class="action-btn" onclick="openModal('modal-invite')"><div class="action-icon">&#128279;</div><div class="action-label">Inviter</div></div>
+        <div class="action-btn" onclick="switchTab('bassin')"><div class="action-icon">&#128081;</div><div class="action-label">Plans VIP</div></div>
+        <div class="action-btn" onclick="openModal('modal-support')"><div class="action-icon">&#128172;</div><div class="action-label">Support</div></div>
+        <div class="action-btn" onclick="openModal('modal-app')"><div class="action-icon">&#128241;</div><div class="action-label">Application</div></div>
+      </div>
+
+      <!-- Team Section -->
+      <div class="team-section">
+        <div class="team-section-title">Notre Équipe</div>
+        <div class="team-scroll">
+          <div class="team-track" id="team-track"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASSIN -->
+    <div class="tab-view" id="tab-bassin">
+      <div class="bassin-header">
+        <div class="bassin-title">Plans VIP</div>
+        <div class="bassin-sub">Choisissez votre plan et commencez à investir</div>
+      </div>
+      <div class="vip-cards" id="vip-cards"></div>
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- EKIP -->
+    <div class="tab-view" id="tab-ekip">
+      <div class="ekip-wrap">
+        <div class="ekip-hero">
+          <h2>&#128101; Votre Équipe</h2>
+          <p>Invitez des amis, gagnez des commissions</p>
+          <div class="ref-box" onclick="copyInviteLink()">
+            <span id="ekip-ref-link">pawins.com/ref/USER123</span>
+            <span>&#128203; Copier</span>
+          </div>
+        </div>
+        <div class="ekip-stats">
+          <div class="ekip-stat"><div class="ekip-stat-val" id="ekip-count">0</div><div class="ekip-stat-label">Membres</div></div>
+          <div class="ekip-stat"><div class="ekip-stat-val">$<span id="ekip-rev">0.00</span></div><div class="ekip-stat-label">Revenu Équipe</div></div>
+        </div>
+        <div class="comm-title">Commissions par Plan</div>
+        <div class="comm-table">
+          <div class="comm-row"><span class="comm-plan">VIP 1</span><span class="comm-pct">3%</span><span class="comm-earn">= $0.75</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 2</span><span class="comm-pct">3%</span><span class="comm-earn">= $1.20</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 3</span><span class="comm-pct">3%</span><span class="comm-earn">= $1.50</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 4</span><span class="comm-pct">4%</span><span class="comm-earn">= $2.40</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 5</span><span class="comm-pct">4%</span><span class="comm-earn">= $3.20</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOI -->
+    <div class="tab-view" id="tab-moi">
+      <div class="moi-wrap">
+        <div class="profile-card">
+          <div class="profile-avatar" id="moi-avatar">P</div>
+          <div class="profile-name" id="moi-name">—</div>
+          <div class="profile-email" id="moi-email">—</div>
+          <div class="profile-badge" id="moi-badge">AUCUN PLAN</div>
+        </div>
+        <div class="info-section">
+          <div class="info-row"><div class="info-left"><span class="info-icon">&#128176;</span><span class="info-label">Solde</span></div><span class="info-val">$<span id="moi-balance">0.00</span></span></div>
+          <div class="info-row"><div class="info-left"><span class="info-icon">&#128200;</span><span class="info-label">Revenu Total</span></div><span class="info-val" style="color:var(--green)">$<span id="moi-rev">0.00</span></span></div>
+          <div class="info-row"><div class="info-left"><span class="info-icon">&#128101;</span><span class="info-label">Membres Équipe</span></div><span class="info-val" id="moi-team">0</span></div>
+          <div class="info-row"><div class="info-left"><span class="info-icon">&#128197;</span><span class="info-label">Date Inscription</span></div><span class="info-val" id="moi-date">—</span></div>
+          <div class="info-row"><div class="info-left"><span class="info-icon">&#128279;</span><span class="info-label">Code Référence</span></div><span class="info-val" style="color:var(--blue-light)" id="moi-ref">—</span></div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">&#128682; Se déconnecter</button>
+      </div>
+    </div>
+
+  </div><!-- end app-content -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-maison" onclick="switchTab('maison')"><span class="nav-icon">&#127968;</span><span class="nav-label">Maison</span></div>
+    <div class="nav-item" id="nav-bassin" onclick="switchTab('bassin')"><span class="nav-icon">&#128081;</span><span class="nav-label">Bassin</span></div>
+    <div class="nav-item" id="nav-ekip" onclick="switchTab('ekip')"><span class="nav-icon">&#128101;</span><span class="nav-label">Équipe</span></div>
+    <div class="nav-item" id="nav-moi" onclick="switchTab('moi')"><span class="nav-icon">&#128100;</span><span class="nav-label">Moi</span></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const plans = [
+  {id:1,name:'VIP 1',color:'#1565FF',bg:'linear-gradient(135deg,#1D4ED8,#3B82F6)',price:25,days:22,daily:2.00,total:44.00,fee:4.00},
+  {id:2,name:'VIP 2',color:'#7C3AED',bg:'linear-gradient(135deg,#6D28D9,#8B5CF6)',price:40,days:30,daily:3.20,total:96.00,fee:6.00,featured:true},
+  {id:3,name:'VIP 3',color:'#059669',bg:'linear-gradient(135deg,#065F46,#10B981)',price:50,days:38,daily:4.20,total:159.60,fee:8.00},
+  {id:4,name:'VIP 4',color:'#D97706',bg:'linear-gradient(135deg,#92400E,#F59E0B)',price:60,days:45,daily:6.00,total:270.00,fee:10.00},
+  {id:5,name:'VIP 5',color:'#DC2626',bg:'linear-gradient(135deg,#9F1239,#F43F5E)',price:80,days:55,daily:8.00,total:440.00,fee:12.00},
+];
+
+const teamMembers = [
+  {name:'Alex M.',role:'Fondateur'},{name:'Sophie R.',role:'Directrice'},
+  {name:'Marc T.',role:'Analyste'},{name:'Julie P.',role:'Support'},
+  {name:'Kevin D.',role:'Tech Lead'},{name:'Sarah N.',role:'Finance'},
+  {name:'Lucas B.',role:'Marketing'},{name:'Emma V.',role:'Designer'},
+];
+
+const addresses = {
+  bep20:'0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396',
+  trc20:'TYDHcrwhGkRH68u2fWat72iJoNFqhoadHy'
+};
+
+let currentNet = 'bep20';
+let user = {
+  nom:'Jean',prenom:'Pierre',email:'jean@test.com',
+  balance:0,totalRev:0,teamCount:0,teamRev:0,
+  plan:null,refCode:'PWN123456',date:'16/06/2026'
+};
+let currentPlan = null;
+
+// ===== CALENDAR =====
+function buildCalendar(){
+  const days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','SAMEDI &#127881;','Dimanche'];
+  const today = new Date().getDay();
+  const todayMap = {0:6,1:0,2:1,3:2,4:3,5:4,6:5};
+  const todayIdx = todayMap[today];
+  const track = document.getElementById('cal-track');
+  let html = '';
+  for(let i=0;i<2;i++){
+    days.forEach((d,idx)=>{
+      const isSam = idx===5;
+      const isToday = idx===todayIdx;
+      let cls = 'cal-day';
+      if(isSam) cls+=' samedi';
+      else if(isToday) cls+=' today';
+      html+=`<div class="${cls}"><div class="cal-dot"></div>${d}${isToday&&!isSam?' (Aujourd\'hui)':''}</div>`;
+    });
+  }
+  track.innerHTML = html;
+}
+
+// ===== VIP CARDS =====
+function buildVipCards(){
+  const cont = document.getElementById('vip-cards');
+  cont.innerHTML = plans.map(p=>`
+    <div class="vip-card${p.featured?' featured':''}" onclick="openPlanSheet(${p.id})" style="position:relative">
+      ${p.featured?'<div class="vip-pop">POPULAIRE</div>':''}
+      <div class="vip-head">
+        <div class="vip-name">
+          <div class="vip-icon" style="background:${p.bg}">${p.id}</div>
+          ${p.name}
+        </div>
+        <div class="vip-price">$${p.price}<span>/plan</span></div>
+      </div>
+      <div class="vip-grid">
+        <div class="vip-cell"><div class="vip-cell-label">Durée</div><div class="vip-cell-val">${p.days} jours</div></div>
+        <div class="vip-cell"><div class="vip-cell-label">Profit/jour</div><div class="vip-cell-val g">$${p.daily.toFixed(2)}</div></div>
+        <div class="vip-cell"><div class="vip-cell-label">Profit Total</div><div class="vip-cell-val g">$${p.total.toFixed(2)}</div></div>
+        <div class="vip-cell"><div class="vip-cell-label">Frais/Samedi</div><div class="vip-cell-val o">$${p.fee.toFixed(2)}</div></div>
+      </div>
+      <div class="vip-foot">
+        <button class="btn-vip" style="background:${p.bg}">Voir les détails &#8594;</button>
+        <div class="vip-hint">Appuyez pour voir la simulation complète</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== TEAM =====
+function buildTeam(){
+  const track = document.getElementById('team-track');
+  const doubled = [...teamMembers,...teamMembers];
+  const colors = ['#1565FF','#0A45CC','#1976D2','#1565FF','#0D47A1','#1A6BFF','#2979FF','#1565FF'];
+  track.innerHTML = doubled.map((m,i)=>`
+    <div class="team-member">
+      <div class="team-avatar" style="background:linear-gradient(135deg,${colors[i%colors.length]},${colors[(i+2)%colors.length]})">
+        <svg viewBox="0 0 60 60" fill="none" style="width:100%;height:100%">
+          <circle cx="30" cy="20" r="10" fill="rgba(255,255,255,0.9)"/>
+          <path d="M10 52C10 38 18 32 30 32C42 32 50 38 50 52Z" fill="rgba(255,255,255,0.9)"/>
+          <rect x="18" y="32" width="24" height="14" rx="3" fill="rgba(255,255,255,0.15)"/>
+          <text x="30" y="42" text-anchor="middle" fill="white" font-size="4" font-weight="900" font-family="Inter,sans-serif">PAWINS</text>
+        </svg>
+      </div>
+      <div class="team-name">${m.name}</div>
+      <div class="team-role">${m.role}</div>
+    </div>
+  `).join('');
+}
+
+// ===== UI UPDATE =====
+function updateUI(){
+  const fullName = user.nom+' '+user.prenom;
+  document.getElementById('home-name').textContent = fullName;
+  document.getElementById('home-balance').textContent = user.balance.toFixed(2);
+  document.getElementById('home-usdt').textContent = user.balance.toFixed(2);
+  document.getElementById('home-team').textContent = user.teamCount;
+  document.getElementById('home-team-rev').textContent = user.teamRev.toFixed(2);
+  document.getElementById('home-total-rev').textContent = user.totalRev.toFixed(2);
+  document.getElementById('home-plan').textContent = user.plan?'VIP '+user.plan:'—';
+  document.getElementById('tb-avatar').textContent = user.nom.charAt(0).toUpperCase();
+  // Moi
+  document.getElementById('moi-avatar').textContent = user.nom.charAt(0).toUpperCase();
+  document.getElementById('moi-name').textContent = fullName;
+  document.getElementById('moi-email').textContent = user.email;
+  document.getElementById('moi-badge').textContent = user.plan?'VIP '+user.plan+' ACTIF':'AUCUN PLAN';
+  document.getElementById('moi-balance').textContent = user.balance.toFixed(2);
+  document.getElementById('moi-rev').textContent = user.totalRev.toFixed(2);
+  document.getElementById('moi-team').textContent = user.teamCount;
+  document.getElementById('moi-date').textContent = user.date;
+  document.getElementById('moi-ref').textContent = user.refCode;
+  // Ekip
+  document.getElementById('ekip-count').textContent = user.teamCount;
+  document.getElementById('ekip-rev').textContent = user.teamRev.toFixed(2);
+  document.getElementById('ekip-ref-link').textContent = 'pawins.com/ref/'+user.refCode;
+  document.getElementById('invite-link').textContent = 'pawins.com/ref/'+user.refCode;
+}
+
+// ===== TABS =====
+function switchTab(tab){
+  document.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+  document.querySelector('.app-content').scrollTop=0;
+}
+
+// ===== MODALS =====
+function openModal(id){document.getElementById(id).classList.add('active')}
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('active')});
+});
+
+// ===== NETWORK =====
+function selectNet(net){
+  currentNet=net;
+  document.getElementById('dep-address').textContent=addresses[net];
+  document.getElementById('dep-net-label').textContent=net==='bep20'?'Réseau: BEP20 (BNB Chain)':'Réseau: TRC20 (TRON)';
+  document.getElementById('ntab-bep20').className='net-tab '+(net==='bep20'?'active':'inactive');
+  document.getElementById('ntab-trc20').className='net-tab '+(net==='trc20'?'active':'inactive');
+}
+
+function copyDepAddr(){
+  navigator.clipboard.writeText(addresses[currentNet]).catch(()=>{});
+  showToast('Adresse copiée!','success');
+}
+
+// ===== DEPOSIT =====
+function submitDeposit(){
+  const amt=parseFloat(document.getElementById('dep-amount').value);
+  const hash=document.getElementById('dep-hash').value;
+  if(!amt||amt<10){showToast('Minimum $10 USDT','error');return;}
+  if(!hash){showToast('Entrez le hash de transaction','error');return;}
+  closeModal('modal-deposit');
+  showToast('Dépôt soumis! Vérification en cours...','success');
+}
+
+// ===== WITHDRAW =====
+function submitWithdraw(){
+  const addr=document.getElementById('wd-addr').value;
+  const amt=parseFloat(document.getElementById('wd-amount').value);
+  if(!addr){showToast('Entrez votre adresse BEP20','error');return;}
+  if(!amt||amt<10){showToast('Minimum $10 USDT','error');return;}
+  if(user.balance<amt){showToast('Solde insuffisant','error');return;}
+  closeModal('modal-withdraw');
+  showRecu(amt,addr);
+}
+
+function showRecu(amt,addr){
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('fr-FR');
+  const recuNum='PWN'+Date.now().toString().slice(-8);
+  document.getElementById('recu-amount').textContent='$'+amt.toFixed(2);
+  document.getElementById('recu-name').textContent=user.nom+' '+user.prenom;
+  document.getElementById('recu-date').textContent=dateStr;
+  document.getElementById('recu-addr').textContent=addr.slice(0,10)+'...'+addr.slice(-6);
+  document.getElementById('recu-num').textContent='#'+recuNum;
+  setTimeout(()=>openModal('modal-recu'),300);
+}
+
+// ===== INVITE =====
+function copyInviteLink(){
+  navigator.clipboard.writeText('https://pawins.com/ref/'+user.refCode).catch(()=>{});
+  showToast('Lien copié!','success');
+}
+
+// ===== TELEGRAM =====
+function openTelegram(type){
+  const urls={support:'https://t.me/pawins_support',channel:'https://t.me/pawins_officiel'};
+  window.open(urls[type],'_blank');
+}
+
+// ===== PLAN SHEET =====
+function openPlanSheet(id){
+  const p=plans.find(x=>x.id===id);
+  currentPlan=p;
+  document.getElementById('ps-name').textContent=p.name;
+  document.getElementById('ps-price').textContent='$'+p.price;
+  document.getElementById('ps-days').textContent=p.days+' jours';
+  document.getElementById('ps-daily').textContent='$'+p.daily.toFixed(2);
+  document.getElementById('ps-total').textContent='$'+p.total.toFixed(2);
+  document.getElementById('ps-fee').textContent='$'+p.fee.toFixed(2);
+  let rows='';
+  const weeks=Math.ceil(p.days/7);
+  for(let w=1;w<=weeks;w++){
+    const d=Math.min(7,p.days-(w-1)*7);
+    const profit=(d*p.daily).toFixed(2);
+    rows+=`<div class="ps-weekly-row"><div class="ps-weekly-label">Samedi ${w} (${d} jours)</div><div class="ps-weekly-val">+$${profit}</div></div>`;
+  }
+  document.getElementById('ps-weekly-rows').innerHTML=rows;
+  document.getElementById('planSheet').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+
+function closePlanSheet(){
+  document.getElementById('planSheet').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+function activatePlan(){
+  if(!currentPlan)return;
+  if(user.balance<currentPlan.price){
+    closePlanSheet();
+    showToast('Solde insuffisant. Rechargez d\'abord!','error');
+    setTimeout(()=>openModal('modal-deposit'),500);
+    return;
+  }
+  user.plan=currentPlan.id;
+  user.balance-=currentPlan.price;
+  updateUI();
+  closePlanSheet();
+  showToast('VIP '+currentPlan.id+' activé avec succès!','success');
+}
+
+document.getElementById('planSheet').addEventListener('click',function(e){
+  if(e.target===this)closePlanSheet();
+});
+
+// ===== LOGOUT =====
+function doLogout(){
+  window.location.href='inscription.html';
+}
+
+// ===== TOAST =====
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ===== INIT =====
+buildCalendar();
+buildVipCards();
+buildTeam();
+updateUI();
+</script>
+</body>
+</html>
