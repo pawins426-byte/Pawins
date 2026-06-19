@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PAWINS Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#04080F;--bg2:#080E1A;--bg3:#0D1422;
+  --blue:#1565FF;--blue2:#0A45CC;--blue-light:#4D8EFF;
+  --text:#F0F4FF;--text2:#6B7FA3;--text3:#3D4F6E;
+  --green:#00C97A;--red:#FF3D5A;--gold:#FFB300;
+  --card:#0A1020;--border:rgba(21,101,255,0.18);--border2:rgba(255,255,255,0.05);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;position:fixed;width:100%;top:0;left:0;right:0}
+::-webkit-scrollbar{width:0;height:0}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;z-index:999}
+.login-logo{font-size:28px;font-weight:900;letter-spacing:5px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:2px;margin-bottom:40px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%}
+.login-title{font-size:16px;font-weight:800;margin-bottom:18px}
+.l-field{margin-bottom:12px}
+.l-field label{display:block;font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:700}
+.l-field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Inter',sans-serif}
+.l-field input:focus{border-color:var(--blue)}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:12px;padding:13px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;margin-top:4px}
+.login-err{font-size:12px;color:var(--red);text-align:center;margin-top:10px;display:none}
+
+/* APP */
+.app{display:flex;flex-direction:column;height:100vh;display:none}
+.app.active{display:flex}
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.tab-view{display:none}
+.tab-view.active{display:block}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--bg);border-bottom:1px solid var(--border2);position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:16px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-badge{background:var(--red);color:white;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px}
+.topbar-logout{font-size:12px;color:var(--text2);cursor:pointer;padding:6px 10px;border:1px solid var(--border2);border-radius:8px}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 18px 0}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+.stat-box-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:4px}
+.stat-box-val{font-size:22px;font-weight:800}
+.stat-box-val.g{color:var(--green)}
+.stat-box-val.b{color:var(--blue-light)}
+.stat-box-val.r{color:var(--red)}
+.stat-box-val.o{color:var(--gold)}
+
+/* SECTION */
+.sec{padding:16px 18px 0}
+.sec-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.badge-count{background:var(--blue);color:white;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px}
+.badge-red{background:var(--red)}
+
+/* CARDS */
+.request-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px}
+.req-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.req-name{font-size:14px;font-weight:800}
+.req-type{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px}
+.req-type.depot{background:rgba(0,201,122,0.15);color:var(--green)}
+.req-type.retrait{background:rgba(255,61,90,0.15);color:var(--red)}
+.req-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.req-row{display:flex;justify-content:space-between;align-items:center}
+.req-lbl{font-size:11px;color:var(--text2)}
+.req-val{font-size:12px;font-weight:600}
+.req-val.g{color:var(--green)}
+.req-val.r{color:var(--red)}
+.req-val.b{color:var(--blue-light)}
+.req-actions{display:flex;gap:8px}
+.btn-approve{flex:1;background:rgba(0,201,122,0.12);border:1px solid rgba(0,201,122,0.3);border-radius:10px;padding:10px;color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-reject{flex:1;background:rgba(255,61,90,0.1);border:1px solid rgba(255,61,90,0.25);border-radius:10px;padding:10px;color:var(--red);font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2);font-size:13px}
+
+/* USER CARD */
+.user-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px;cursor:pointer}
+.user-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.user-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-light));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:white;flex-shrink:0}
+.user-info-name{font-size:14px;font-weight:800}
+.user-info-email{font-size:11px;color:var(--text2);margin-top:1px}
+.user-plan-badge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:0.5px}
+.user-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.user-stat{background:var(--bg3);border-radius:8px;padding:7px 10px;text-align:center}
+.user-stat-val{font-size:13px;font-weight:700;color:var(--blue-light)}
+.user-stat-lbl{font-size:9px;color:var(--text2);margin-top:1px}
+
+/* ANNOUNCE */
+.announce-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px}
+.a-field{margin-bottom:12px}
+.a-field label{display:block;font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:700}
+.a-field input,.a-field textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Inter',sans-serif;resize:none}
+.a-field textarea{height:100px;line-height:1.5}
+.a-field input:focus,.a-field textarea:focus{border-color:var(--blue)}
+.btn-send{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:12px;padding:13px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* ANNOUNCE HISTORY */
+.ann-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px}
+.ann-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.ann-msg{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px}
+.ann-footer{display:flex;justify-content:space-between;align-items:center}
+.ann-date{font-size:10px;color:var(--text3)}
+.ann-del{font-size:11px;color:var(--red);cursor:pointer;padding:3px 8px;border:1px solid rgba(255,61,90,0.2);border-radius:6px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(4,8,15,0.96);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.05);display:flex;padding:8px 0 20px;z-index:200}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;position:relative}
+.nav-ico{font-size:20px}
+.nav-lbl{font-size:10px;color:var(--text2);font-weight:500}
+.nav-item.active .nav-lbl{color:var(--blue)}
+.nav-dot{position:absolute;top:2px;right:calc(50% - 18px);width:7px;height:7px;background:var(--red);border-radius:50%;display:none}
+.nav-dot.show{display:block}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:500;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:20px 20px 40px;width:100%;max-width:430px;animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;max-height:85vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border2)}
+.detail-row:last-of-type{border-bottom:none}
+.detail-lbl{font-size:12px;color:var(--text2)}
+.detail-val{font-size:13px;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:600;z-index:9999;transition:transform 0.3s ease;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,201,122,0.4);color:var(--green)}
+.toast.error{border-color:rgba(255,61,90,0.4);color:var(--red)}
+.toast.info{border-color:rgba(21,101,255,0.4);color:var(--blue-light)}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-logo">PAWINS</div>
+  <div class="login-sub">Administration</div>
+  <div class="login-card">
+    <div class="login-title">Connexion Admin</div>
+    <div class="l-field"><label>Identifiant</label><input type="text" id="admin-user" placeholder="admin"></div>
+    <div class="l-field"><label>Mot de passe</label><input type="password" id="admin-pass" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()">Se connecter</button>
+    <div class="login-err" id="login-err">Identifiants incorrects</div>
+  </div>
+</div>
+
+<!-- USER DETAIL MODAL -->
+<div class="modal-overlay" id="modal-user">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="mu-name">—</div>
+    <div class="modal-sub" id="mu-email">—</div>
+    <div id="mu-rows"></div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn-approve" onclick="closeModal('modal-user')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="admin-app">
+  <div class="topbar">
+    <div class="topbar-logo">PAWINS ADMIN</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="topbar-badge" id="pending-badge" style="display:none">0</div>
+      <div class="topbar-logout" onclick="doLogout()">Quitter</div>
+    </div>
+  </div>
+
+  <div class="app-content">
+
+    <!-- DASHBOARD -->
+    <div class="tab-view active" id="tab-dashboard">
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-box-lbl">Total Membres</div><div class="stat-box-val b" id="stat-membres">0</div></div>
+        <div class="stat-box"><div class="stat-box-lbl">Plans Actifs</div><div class="stat-box-val g" id="stat-plans">0</div></div>
+        <div class="stat-box"><div class="stat-box-lbl">Depots Today</div><div class="stat-box-val g" id="stat-depots">$0</div></div>
+        <div class="stat-box"><div class="stat-box-lbl">Retraits Pending</div><div class="stat-box-val r" id="stat-retraits">0</div></div>
+      </div>
+
+      <!-- Pending retraits -->
+      <div class="sec" style="margin-top:16px">
+        <div class="sec-title">
+          Retraits en Attente
+          <span class="badge-count badge-red" id="badge-retraits">0</span>
+        </div>
+        <div id="list-retraits-dash">
+          <div class="empty-state">Aucun retrait en attente</div>
+        </div>
+      </div>
+
+      <!-- Recent depots -->
+      <div class="sec">
+        <div class="sec-title">
+          Depots Recents
+          <span class="badge-count" id="badge-depots">0</span>
+        </div>
+        <div id="list-depots-dash">
+          <div class="empty-state">Aucun depot recent</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RETRAITS -->
+    <div class="tab-view" id="tab-retraits">
+      <div class="sec">
+        <div class="sec-title">Demandes de Retrait</div>
+        <div id="list-retraits-full">
+          <div class="empty-state">Aucune demande</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPOTS -->
+    <div class="tab-view" id="tab-depots">
+      <div class="sec">
+        <div class="sec-title">Tous les Depots</div>
+        <div id="list-depots-full">
+          <div class="empty-state">Aucun depot</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBRES -->
+    <div class="tab-view" id="tab-membres">
+      <div class="sec">
+        <div class="sec-title">Tous les Membres</div>
+        <div id="list-membres">
+          <div class="empty-state">Chargement...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANNONCES -->
+    <div class="tab-view" id="tab-annonces">
+      <div class="sec">
+        <div class="sec-title">Envoyer une Annonce</div>
+        <div class="announce-form">
+          <div class="a-field"><label>Titre</label><input type="text" id="ann-titre" placeholder="Ex: Maintenance prevue..."></div>
+          <div class="a-field"><label>Message</label><textarea id="ann-msg" placeholder="Ecrivez votre message ici..."></textarea></div>
+          <button class="btn-send" onclick="sendAnnonce()">Envoyer a tous les membres</button>
+        </div>
+        <div class="sec-title" style="margin-top:4px">Annonces Envoyees</div>
+        <div id="list-annonces">
+          <div class="empty-state">Aucune annonce</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-dashboard" onclick="switchTab('dashboard')">
+      <span class="nav-ico">&#9783;</span>
+      <span class="nav-lbl">Dashboard</span>
+    </div>
+    <div class="nav-item" id="nav-retraits" onclick="switchTab('retraits')">
+      <span class="nav-ico">&#8595;</span>
+      <span class="nav-lbl">Retraits</span>
+      <div class="nav-dot" id="dot-retraits"></div>
+    </div>
+    <div class="nav-item" id="nav-depots" onclick="switchTab('depots')">
+      <span class="nav-ico">&#8593;</span>
+      <span class="nav-lbl">Depots</span>
+    </div>
+    <div class="nav-item" id="nav-membres" onclick="switchTab('membres')">
+      <span class="nav-ico">&#128101;</span>
+      <span class="nav-lbl">Membres</span>
+    </div>
+    <div class="nav-item" id="nav-annonces" onclick="switchTab('annonces')">
+      <span class="nav-ico">&#128226;</span>
+      <span class="nav-lbl">Annonces</span>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey:"AIzaSyBPFxkA1JNXuXCrDh8cDJeZL-gxo717DD4",
+  authDomain:"pawins-bbdfc.firebaseapp.com",
+  projectId:"pawins-bbdfc",
+  storageBucket:"pawins-bbdfc.firebasestorage.app",
+  messagingSenderId:"245443495905",
+  appId:"1:245443495905:web:6cd012de019fe7f81774a0"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'pawins2024';
+
+const plans = [
+  {id:1,fee:4.00},{id:2,fee:6.00},{id:3,fee:8.00},{id:4,fee:10.00},{id:5,fee:12.00}
+];
+
+// ===== LOGIN =====
+function doLogin(){
+  const u=document.getElementById('admin-user').value.trim();
+  const p=document.getElementById('admin-pass').value;
+  if(u===ADMIN_USER && p===ADMIN_PASS){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').classList.add('active');
+    loadAll();
+  } else {
+    document.getElementById('login-err').style.display='block';
+  }
+}
+
+function doLogout(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('admin-app').classList.remove('active');
+  document.getElementById('admin-user').value='';
+  document.getElementById('admin-pass').value='';
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+// ===== TABS =====
+function switchTab(tab){
+  document.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+  document.querySelector('.app-content').scrollTop=0;
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+
+// ===== LOAD ALL =====
+function loadAll(){
+  loadRetraits();
+  loadDepots();
+  loadMembres();
+  loadAnnonces();
+}
+
+// ===== FORMAT DATE =====
+function fmtDate(ts){
+  if(!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+// ===== RETRAITS =====
+function loadRetraits(){
+  db.collection('transactions')
+    .where('type','==','retrait')
+    .orderBy('date','desc')
+    .onSnapshot(snap=>{
+      const all=[];
+      snap.forEach(doc=>all.push({id:doc.id,...doc.data()}));
+      const pending=all.filter(x=>x.statut==='en_attente');
+      const count=pending.length;
+
+      // Badge
+      document.getElementById('badge-retraits').textContent=count;
+      document.getElementById('stat-retraits').textContent=count;
+      if(count>0){
+        document.getElementById('pending-badge').style.display='block';
+        document.getElementById('pending-badge').textContent=count;
+        document.getElementById('dot-retraits').classList.add('show');
+      } else {
+        document.getElementById('pending-badge').style.display='none';
+        document.getElementById('dot-retraits').classList.remove('show');
+      }
+
+      // Dashboard - pending only
+      const dashEl=document.getElementById('list-retraits-dash');
+      dashEl.innerHTML=pending.length===0
+        ? '<div class="empty-state">Aucun retrait en attente</div>'
+        : pending.map(r=>renderRetrait(r)).join('');
+
+      // Full list
+      const fullEl=document.getElementById('list-retraits-full');
+      fullEl.innerHTML=all.length===0
+        ? '<div class="empty-state">Aucun retrait</div>'
+        : all.map(r=>renderRetrait(r)).join('');
+    });
+}
+
+function getFee(planId){
+  const p=plans.find(x=>x.id===planId);
+  return p?p.fee:4;
+}
+
+function renderRetrait(r){
+  const fee=getFee(r.planId||null);
+  const net=(r.montant||0)-fee;
+  const isPending=r.statut==='en_attente';
+  return `<div class="request-card" id="req-${r.id}">
+    <div class="req-header">
+      <div class="req-name">${r.nomClient||'Inconnu'}</div>
+      <div class="req-type retrait">${isPending?'En attente':r.statut==='approuve'?'Approuve':'Rejete'}</div>
+    </div>
+    <div class="req-rows">
+      <div class="req-row"><span class="req-lbl">Montant demande</span><span class="req-val">${(r.montant||0).toFixed(2)} USDT</span></div>
+      <div class="req-row"><span class="req-lbl">Frais plateforme</span><span class="req-val r">-$${fee.toFixed(2)}</span></div>
+      <div class="req-row"><span class="req-lbl">Client recevra</span><span class="req-val g">$${Math.max(0,net).toFixed(2)} USDT</span></div>
+      <div class="req-row"><span class="req-lbl">Adresse BEP20</span><span class="req-val b" style="font-size:10px;max-width:160px;text-align:right;word-break:break-all">${r.adresse||'—'}</span></div>
+      <div class="req-row"><span class="req-lbl">Email</span><span class="req-val" style="font-size:11px">${r.email||'—'}</span></div>
+      <div class="req-row"><span class="req-lbl">Telephone</span><span class="req-val">${r.phone||'—'}</span></div>
+      <div class="req-row"><span class="req-lbl">Date demande</span><span class="req-val" style="font-size:10px">${fmtDate(r.date)}</span></div>
+      <div class="req-row"><span class="req-lbl">Plan actif</span><span class="req-val">VIP ${r.planId||'—'}</span></div>
+      <div class="req-row"><span class="req-lbl">Reference</span><span class="req-val" style="color:var(--text2);font-size:11px">#${r.id.slice(0,10)}</span></div>
+    </div>
+    ${isPending?`<div class="req-actions">
+      <button class="btn-approve" onclick="approuver('${r.id}','${r.userId}',${r.montant||0})">Approuver</button>
+      <button class="btn-reject" onclick="rejeter('${r.id}','${r.userId}')">Rejeter</button>
+    </div>`:`<div style="font-size:11px;color:var(--text2);text-align:center;padding:4px">
+      ${r.statut==='approuve'?'Retrait envoye le '+fmtDate(r.dateTraite):'Rejete le '+fmtDate(r.dateTraite)}
+    </div>`}
+  </div>`;
+}
+
+async function approuver(txId, userId, montant){
+  try{
+    await db.collection('transactions').doc(txId).update({
+      statut:'approuve',
+      dateTraite:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // Deduct balance
+    const userSnap=await db.collection('users').doc(userId).get();
+    if(userSnap.exists){
+      const bal=userSnap.data().balance||0;
+      await db.collection('users').doc(userId).update({
+        balance: Math.max(0,bal-montant)
+      });
+      // Send notification to user
+      await db.collection('notifications').add({
+        userId: userId,
+        type: 'retrait_approuve',
+        montant: montant,
+        message: 'Votre retrait de $'+montant.toFixed(2)+' USDT a ete approuve!',
+        lu: false,
+        date: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    showToast('Retrait approuve!','success');
+  }catch(e){
+    showToast('Erreur: '+e.message,'error');
+  }
+}
+
+async function rejeter(txId, userId){
+  try{
+    await db.collection('transactions').doc(txId).update({
+      statut:'rejete',
+      dateTraite:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await db.collection('notifications').add({
+      userId: userId,
+      type: 'retrait_rejete',
+      message: 'Votre demande de retrait a ete rejetee. Contactez le support.',
+      lu: false,
+      date: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast('Retrait rejete','error');
+  }catch(e){
+    showToast('Erreur: '+e.message,'error');
+  }
+}
+
+// ===== DEPOTS =====
+function loadDepots(){
+  db.collection('transactions')
+    .where('type','==','depot')
+    .orderBy('date','desc')
+    .onSnapshot(snap=>{
+      const all=[];
+      snap.forEach(doc=>all.push({id:doc.id,...doc.data()}));
+      document.getElementById('badge-depots').textContent=all.length;
+
+      // Today total
+      const today=new Date(); today.setHours(0,0,0,0);
+      const todayTotal=all.filter(d=>{
+        if(!d.date) return false;
+        const dd=d.date.toDate?d.date.toDate():new Date(d.date);
+        return dd>=today;
+      }).reduce((sum,d)=>sum+(d.montant||0),0);
+      document.getElementById('stat-depots').textContent='$'+todayTotal.toFixed(0);
+
+      const html=all.length===0
+        ? '<div class="empty-state">Aucun depot</div>'
+        : all.map(d=>`
+          <div class="request-card">
+            <div class="req-header">
+              <div class="req-name">${d.nomClient||'Inconnu'}</div>
+              <div class="req-type depot">Confirme</div>
+            </div>
+            <div class="req-rows">
+              <div class="req-row"><span class="req-lbl">Montant</span><span class="req-val g">+$${(d.montant||0).toFixed(2)} USDT</span></div>
+              <div class="req-row"><span class="req-lbl">Reseau</span><span class="req-val">${(d.reseau||'').toUpperCase()}</span></div>
+              <div class="req-row"><span class="req-lbl">Hash</span><span class="req-val b" style="font-size:10px;max-width:160px;text-align:right;word-break:break-all">${d.hash||'—'}</span></div>
+              <div class="req-row"><span class="req-lbl">Email</span><span class="req-val" style="font-size:11px">${d.email||'—'}</span></div>
+              <div class="req-row"><span class="req-lbl">Date</span><span class="req-val" style="font-size:10px">${fmtDate(d.date)}</span></div>
+            </div>
+          </div>`).join('');
+
+      document.getElementById('list-depots-dash').innerHTML=all.slice(0,3).length===0
+        ? '<div class="empty-state">Aucun depot recent</div>'
+        : all.slice(0,3).map(d=>`
+          <div class="request-card">
+            <div class="req-header">
+              <div class="req-name">${d.nomClient||'Inconnu'}</div>
+              <div class="req-type depot">+$${(d.montant||0).toFixed(2)}</div>
+            </div>
+            <div class="req-rows">
+              <div class="req-row"><span class="req-lbl">Reseau</span><span class="req-val">${(d.reseau||'').toUpperCase()}</span></div>
+              <div class="req-row"><span class="req-lbl">Date</span><span class="req-val" style="font-size:10px">${fmtDate(d.date)}</span></div>
+            </div>
+          </div>`).join('');
+
+      document.getElementById('list-depots-full').innerHTML=html;
+    });
+}
+
+// ===== MEMBRES =====
+function loadMembres(){
+  db.collection('users').orderBy('dateInscription','desc').onSnapshot(snap=>{
+    const users=[];
+    snap.forEach(doc=>users.push({id:doc.id,...doc.data()}));
+    document.getElementById('stat-membres').textContent=users.length;
+    document.getElementById('stat-plans').textContent=users.filter(u=>u.planActif).length;
+
+    document.getElementById('list-membres').innerHTML=users.length===0
+      ? '<div class="empty-state">Aucun membre</div>'
+      : users.map(u=>{
+          const ini=((u.nom||'?')[0]).toUpperCase();
+          const planColors={1:'#1565FF',2:'#7C3AED',3:'#059669',4:'#D97706',5:'#DC2626'};
+          const pc=planColors[u.planActif]||'#3D4F6E';
+          return `<div class="user-card" onclick="showUser('${u.id}')">
+            <div class="user-head">
+              <div class="user-avatar">${ini}</div>
+              <div style="flex:1">
+                <div class="user-info-name">${(u.nom||'')+' '+(u.prenom||'')}</div>
+                <div class="user-info-email">${u.email||'—'}</div>
+              </div>
+              ${u.planActif?`<div class="user-plan-badge" style="background:${pc}20;color:${pc};border:1px solid ${pc}40">VIP ${u.planActif}</div>`:'<div class="user-plan-badge" style="background:rgba(107,127,163,0.1);color:var(--text2);border:1px solid var(--border)">Aucun</div>'}
+            </div>
+            <div class="user-stats">
+              <div class="user-stat"><div class="user-stat-val">$${(u.balance||0).toFixed(0)}</div><div class="user-stat-lbl">Solde</div></div>
+              <div class="user-stat"><div class="user-stat-val" style="color:var(--green)">$${(u.totalRevenu||0).toFixed(0)}</div><div class="user-stat-lbl">Revenu</div></div>
+              <div class="user-stat"><div class="user-stat-val" style="color:var(--gold)">${u.teamCount||0}</div><div class="user-stat-lbl">Equipe</div></div>
+            </div>
+          </div>`;
+        }).join('');
+  });
+}
+
+function showUser(uid){
+  db.collection('users').doc(uid).get().then(snap=>{
+    if(!snap.exists)return;
+    const u=snap.data();
+    document.getElementById('mu-name').textContent=(u.nom||'')+' '+(u.prenom||'');
+    document.getElementById('mu-email').textContent=u.email||'—';
+    document.getElementById('mu-rows').innerHTML=`
+      <div class="detail-row"><span class="detail-lbl">Telephone</span><span class="detail-val">${u.phone||'—'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Solde</span><span class="detail-val" style="color:var(--blue-light)">$${(u.balance||0).toFixed(2)}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Revenu Total</span><span class="detail-val" style="color:var(--green)">$${(u.totalRevenu||0).toFixed(2)}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Plan Actif</span><span class="detail-val">${u.planActif?'VIP '+u.planActif:'Aucun'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Membres Equipe</span><span class="detail-val">${u.teamCount||0}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Code Referral</span><span class="detail-val" style="color:var(--blue-light)">${u.refCode||'—'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Date Inscription</span><span class="detail-val" style="font-size:11px">${fmtDate(u.dateInscription)}</span></div>
+    `;
+    document.getElementById('modal-user').classList.add('active');
+  });
+}
+
+// ===== ANNONCES =====
+function loadAnnonces(){
+  db.collection('annonces').orderBy('date','desc').onSnapshot(snap=>{
+    const anns=[];
+    snap.forEach(doc=>anns.push({id:doc.id,...doc.data()}));
+    document.getElementById('list-annonces').innerHTML=anns.length===0
+      ? '<div class="empty-state">Aucune annonce envoyee</div>'
+      : anns.map(a=>`
+          <div class="ann-item">
+            <div class="ann-title">${a.titre||'Sans titre'}</div>
+            <div class="ann-msg">${a.message||''}</div>
+            <div class="ann-footer">
+              <div class="ann-date">${fmtDate(a.date)}</div>
+              <div class="ann-del" onclick="supprimerAnnonce('${a.id}')">Supprimer</div>
+            </div>
+          </div>`).join('');
+  });
+}
+
+async function sendAnnonce(){
+  const titre=document.getElementById('ann-titre').value.trim();
+  const msg=document.getElementById('ann-msg').value.trim();
+  if(!titre){showToast('Entrez un titre','error');return;}
+  if(!msg){showToast('Entrez un message','error');return;}
+  try{
+    await db.collection('annonces').add({
+      titre:titre,
+      message:msg,
+      date:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('ann-titre').value='';
+    document.getElementById('ann-msg').value='';
+    showToast('Annonce envoyee a tous!','success');
+  }catch(e){
+    showToast('Erreur: '+e.message,'error');
+  }
+}
+
+async function supprimerAnnonce(id){
+  try{
+    await db.collection('annonces').doc(id).delete();
+    showToast('Annonce supprimee','info');
+  }catch(e){
+    showToast('Erreur','error');
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// Close modal on backdrop
+document.getElementById('modal-user').addEventListener('click',function(e){
+  if(e.target===this)closeModal('modal-user');
+});
+</script>
+</body>
+</html>
