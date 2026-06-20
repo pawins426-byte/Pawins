@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PAWINS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#04080F;--bg2:#080E1A;--bg3:#0D1422;
+  --blue:#1565FF;--blue2:#0A45CC;--blue-light:#4D8EFF;
+  --text:#F0F4FF;--text2:#6B7FA3;--text3:#3D4F6E;
+  --green:#00C97A;--red:#FF3D5A;--gold:#FFB300;
+  --card:#0A1020;--border:rgba(21,101,255,0.18);--border2:rgba(255,255,255,0.05);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;position:fixed;width:100%;top:0;left:0;right:0}
+::-webkit-scrollbar{width:0;height:0}
+
+.app{display:flex;flex-direction:column;height:100vh}
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.tab-view{display:none}
+.tab-view.active{display:block}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;background:var(--bg);border-bottom:1px solid var(--border2);position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:20px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-icon{width:34px;height:34px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.topbar-avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;cursor:pointer}
+
+/* CALENDAR */
+.calendar-ticker{background:rgba(21,101,255,0.05);border-bottom:1px solid rgba(21,101,255,0.1);padding:9px 0;overflow:hidden}
+.calendar-track{display:flex;animation:calScroll 16s linear infinite;width:max-content}
+@keyframes calScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.cal-day{padding:5px 14px;font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;display:flex;align-items:center;gap:5px;border-right:1px solid var(--border2)}
+.cal-day.today{color:var(--blue-light);font-weight:700}
+.cal-day.samedi{color:var(--gold);font-weight:800;font-size:12px;background:rgba(255,179,0,0.06)}
+.cal-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* FLAGS TICKER */
+.flags-ticker{background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border2);padding:7px 0;overflow:hidden}
+.flags-track{display:flex;animation:flagScroll 22s linear infinite;width:max-content}
+@keyframes flagScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.flag-item{padding:3px 16px;font-size:18px;white-space:nowrap;border-right:1px solid var(--border2)}
+
+/* BALANCE CARD */
+.balance-card{margin:14px 18px;background:linear-gradient(135deg,#0A1830,#0D2050);border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.balance-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(21,101,255,0.2) 0%,transparent 70%);border-radius:50%}
+.balance-label{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.balance-amount{font-size:34px;font-weight:900;margin-bottom:3px}
+.balance-amount span{color:var(--blue-light)}
+.balance-usdt{font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:16px}
+.balance-actions{display:flex;gap:10px}
+.bal-btn{flex:1;padding:11px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif;transition:all 0.2s}
+.bal-btn.deposit{background:var(--blue);color:white}
+.bal-btn.withdraw{background:rgba(255,255,255,0.07);color:white;border:1px solid rgba(255,255,255,0.1)}
+.bal-btn:active{transform:scale(0.97)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px;margin-bottom:18px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+.stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px}
+.stat-val{font-size:17px;font-weight:800}
+.stat-val.g{color:var(--green)}
+.stat-val.b{color:var(--blue-light)}
+
+/* ACTIONS */
+.sec-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 18px;margin-bottom:12px}
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 18px;margin-bottom:20px}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.action-icon{width:56px;height:56px;background:var(--card);border:1px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.action-icon svg{width:24px;height:24px}
+.action-icon:active{transform:scale(0.92);background:var(--bg3)}
+.action-label{font-size:10px;color:var(--text2);text-align:center;font-weight:500}
+
+/* TEAM */
+.team-section{margin:0 0 20px;padding:14px 0 0;background:linear-gradient(to bottom,transparent,rgba(21,101,255,0.03),transparent)}
+.team-scroll{overflow:hidden}
+.team-track{display:flex;gap:16px;padding:0 18px;animation:teamScroll 22s linear infinite;width:max-content}
+@keyframes teamScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.team-member{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0;opacity:0.8}
+.team-avatar{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue-light));display:flex;align-items:center;justify-content:center;border:2px solid rgba(21,101,255,0.25);overflow:hidden}
+.team-name{font-size:11px;font-weight:700;color:var(--text2)}
+.team-role{font-size:9px;color:var(--text3)}
+
+/* BASSIN */
+.bassin-header{padding:18px 18px 0;margin-bottom:14px}
+.bassin-title{font-size:20px;font-weight:800;margin-bottom:3px}
+.bassin-sub{font-size:12px;color:var(--text2)}
+.vip-cards{padding:0 18px;display:flex;flex-direction:column;gap:14px}
+.vip-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;transition:all 0.2s;position:relative}
+.vip-card.featured{border-color:rgba(21,101,255,0.45)}
+.vip-pop{position:absolute;top:13px;right:13px;background:var(--blue);color:white;font-size:9px;font-weight:800;padding:3px 8px;border-radius:5px;letter-spacing:0.5px}
+.vip-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px 11px;border-bottom:1px solid var(--border2)}
+.vip-name{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.vip-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:white}
+.vip-price{font-size:22px;font-weight:900;color:var(--blue-light)}
+.vip-price span{font-size:12px;color:var(--text2);font-weight:400}
+.vip-grid{display:grid;grid-template-columns:1fr 1fr}
+.vip-cell{padding:11px 16px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+.vip-cell:nth-child(even){border-right:none}
+.vip-cell:nth-last-child(-n+2){border-bottom:none}
+.vip-cell-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;margin-bottom:3px}
+.vip-cell-val{font-size:14px;font-weight:700}
+.vip-cell-val.g{color:var(--green)}
+.vip-cell-val.o{color:var(--gold)}
+.vip-foot{padding:12px 17px}
+.btn-vip{width:100%;padding:11px;border-radius:10px;border:none;color:white;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.vip-hint{font-size:10px;color:var(--text2);text-align:center;margin-top:6px}
+
+/* EKIP */
+.ekip-wrap{padding:18px}
+.ekip-hero{background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));border:1px solid rgba(21,101,255,0.25);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:18px}
+.ekip-hero h2{font-size:22px;font-weight:900;margin-bottom:4px}
+.ekip-hero p{font-size:12px;color:var(--text2);margin-bottom:14px}
+.ref-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--blue-light);font-weight:600;cursor:pointer}
+.ekip-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.ekip-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.ekip-stat-val{font-size:24px;font-weight:800;color:var(--blue-light);margin-bottom:3px}
+.ekip-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px}
+.comm-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.comm-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.comm-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border2)}
+.comm-row:last-child{border-bottom:none}
+.comm-plan{font-size:12px;font-weight:600}
+.comm-pct{font-size:13px;font-weight:800;color:var(--green)}
+.comm-earn{font-size:11px;color:var(--text2)}
+
+/* FAQ */
+.faq-wrap{padding:18px}
+.faq-title{font-size:18px;font-weight:800;margin-bottom:14px}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:13px;font-weight:600}
+.faq-arrow{color:var(--text2);font-size:18px;transition:transform 0.2s;flex-shrink:0;margin-left:10px}
+.faq-a{display:none;padding:12px 16px 14px;font-size:12px;color:var(--text2);line-height:1.7;border-top:1px solid var(--border2)}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-arrow{transform:rotate(45deg)}
+
+/* MOI */
+.moi-wrap{padding:18px}
+.profile-card{background:linear-gradient(135deg,#0A1830,#0D2050);border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:22px;text-align:center;margin-bottom:14px}
+.profile-avatar{width:66px;height:66px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:white;margin:0 auto 11px}
+.profile-name{font-size:18px;font-weight:800;margin-bottom:3px}
+.profile-email{font-size:12px;color:var(--text2);margin-bottom:10px}
+.profile-badge{display:inline-block;background:rgba(21,101,255,0.15);border:1px solid rgba(21,101,255,0.3);color:var(--blue-light);font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px}
+.info-section{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border2)}
+.info-row:last-child{border-bottom:none}
+.info-left{display:flex;align-items:center;gap:10px}
+.info-icon{width:18px;text-align:center}
+.info-lbl{font-size:12px;color:var(--text2)}
+.info-val{font-size:12px;font-weight:600}
+
+/* SETTINGS MOI */
+.settings-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.setting-item{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer}
+.setting-left{display:flex;align-items:center;gap:12px}
+.setting-icon{width:36px;height:36px;background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.setting-title{font-size:13px;font-weight:600}
+.setting-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.setting-arrow{color:var(--text2);font-size:16px}
+.logout-btn{width:100%;background:rgba(255,61,90,0.1);border:1px solid rgba(255,61,90,0.25);border-radius:12px;padding:13px;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(4,8,15,0.96);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.05);display:flex;padding:8px 0 20px;z-index:200}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0}
+.nav-ico{font-size:20px}
+.nav-lbl{font-size:10px;color:var(--text2);font-weight:500}
+.nav-item.active .nav-lbl{color:var(--blue)}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:500;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:20px 20px 40px;width:100%;max-width:430px;animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;max-height:85vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+.modal-info{background:rgba(21,101,255,0.07);border:1px solid rgba(21,101,255,0.15);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.modal-info strong{color:var(--blue-light)}
+.m-field{margin-bottom:12px}
+.m-field label{display:block;font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:700}
+.m-field input,.m-field select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Inter',sans-serif;transition:border-color 0.2s}
+.m-field input:focus{border-color:var(--blue)}
+.m-field input::placeholder{color:var(--text2)}
+.btn-modal{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:12px;padding:13px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 16px rgba(21,101,255,0.35);transition:all 0.2s}
+.btn-modal:active{transform:scale(0.98)}
+.btn-modal.sec{background:rgba(255,255,255,0.05);border:1px solid var(--border);box-shadow:none;margin-top:8px}
+
+/* Network tabs */
+.net-tabs{display:flex;gap:8px;margin-bottom:14px}
+.net-tab{flex:1;text-align:center;padding:9px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);color:var(--text2);background:transparent}
+.net-tab.active{background:var(--blue);color:white;border-color:var(--blue)}
+
+/* Address box */
+.addr-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.addr-net{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-weight:700}
+.addr-text{font-size:11px;color:var(--blue-light);word-break:break-all;line-height:1.5;margin-bottom:10px;font-weight:600}
+.btn-copy{width:100%;background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.25);border-radius:8px;padding:8px;color:var(--blue-light);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* Plan sheet */
+.plan-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:400;align-items:flex-end;justify-content:center}
+.plan-sheet.active{display:flex}
+.plan-sheet-inner{background:var(--bg2);border:1px solid var(--border);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;padding:0 0 40px;animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;position:relative}
+.ps-close{position:absolute;top:14px;right:16px;width:30px;height:30px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px}
+.ps-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:14px auto 18px}
+.ps-header{padding:0 20px 18px;border-bottom:1px solid var(--border2)}
+.ps-name{font-size:22px;font-weight:900;margin-bottom:3px}
+.ps-price-box{background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));border:1px solid var(--border);border-radius:16px;padding:18px;margin:18px 20px;text-align:center}
+.ps-price-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.ps-price-val{font-size:40px;font-weight:900;color:var(--blue-light)}
+.ps-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:18px}
+.ps-stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px}
+.ps-stat-val{font-size:17px;font-weight:800;margin-bottom:2px}
+.ps-stat-val.g{color:var(--green)}
+.ps-stat-val.b{color:var(--blue-light)}
+.ps-stat-val.o{color:var(--gold)}
+.ps-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px}
+.ps-weekly{padding:0 20px;margin-bottom:18px}
+.ps-weekly-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
+.ps-weekly-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:7px}
+.ps-weekly-lbl{font-size:12px;font-weight:600}
+.ps-weekly-val{font-size:13px;font-weight:700;color:var(--green)}
+.ps-btn-wrap{margin:0 20px}
+
+/* Recu */
+.recu-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
+.recu-logo{font-size:18px;font-weight:900;letter-spacing:3px;color:var(--blue-light);margin-bottom:3px}
+.recu-sub{font-size:10px;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+.recu-amount{font-size:34px;font-weight:900;color:var(--green);margin-bottom:3px}
+.recu-usdt{font-size:11px;color:var(--text2);margin-bottom:14px}
+.recu-divider{height:1px;background:var(--border2);margin:10px 0}
+.recu-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.recu-lbl{font-size:11px;color:var(--text2)}
+.recu-val{font-size:11px;font-weight:600}
+.recu-status{display:inline-block;background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.3);color:var(--gold);font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;letter-spacing:0.5px;margin-top:12px}
+.recu-seal{margin-top:12px;font-size:10px;color:var(--text3);border-top:1px dashed var(--border);padding-top:10px}
+
+/* Support modal */
+.support-option{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;margin-bottom:10px;transition:border-color 0.2s}
+.support-option:active{border-color:var(--blue)}
+.support-tg-icon{width:44px;height:44px;background:#229ED9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.support-title{font-size:14px;font-weight:700}
+.support-sub{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* Support contact form */
+.contact-form{margin-top:14px}
+
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:600;z-index:9999;transition:transform 0.3s ease;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,201,122,0.4);color:var(--green)}
+.toast.error{border-color:rgba(255,61,90,0.4);color:var(--red)}
+.toast.info{border-color:rgba(21,101,255,0.4);color:var(--blue-light)}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- LAUNCH OVERLAY -->
+<div id="launch-overlay" style="display:none;position:fixed;inset:0;background:rgba(4,8,15,0.97);backdrop-filter:blur(10px);z-index:9000;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center">
+  <div style="font-size:32px;font-weight:900;letter-spacing:5px;background:linear-gradient(135deg,#fff,#4D8EFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">PAWINS</div>
+  <div style="font-size:12px;color:#6B7FA3;text-transform:uppercase;letter-spacing:2px;margin-bottom:40px">Plateforme d'Investissement</div>
+  <div style="background:#0A1020;border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:28px 24px;width:100%;max-width:340px">
+    <div style="font-size:13px;color:#FFB300;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px">Lancement Officiel</div>
+    <div style="font-size:28px;font-weight:900;margin-bottom:6px">Lundi 23 Juin 2026</div>
+    <div style="font-size:13px;color:#6B7FA3;margin-bottom:24px">La plateforme sera disponible ce jour</div>
+    <div style="background:rgba(21,101,255,0.08);border:1px solid rgba(21,101,255,0.2);border-radius:12px;padding:16px;margin-bottom:20px">
+      <div style="font-size:11px;color:#6B7FA3;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Compte a rebours</div>
+      <div style="font-size:22px;font-weight:900;color:#4D8EFF" id="overlay-countdown">—</div>
+    </div>
+    <button onclick="closeOverlay()" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;color:#6B7FA3;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Retour</button>
+  </div>
+</div>
+
+<!-- PLAN SHEET -->
+<div class="plan-sheet" id="planSheet">
+  <div class="plan-sheet-inner">
+    <div class="ps-close" onclick="closePlanSheet()">&#215;</div>
+    <div class="ps-handle"></div>
+    <div class="ps-header">
+      <div class="ps-name" id="ps-name"></div>
+      <div style="font-size:12px;color:var(--text2)">Simulation complète de votre plan</div>
+    </div>
+    <div class="ps-price-box">
+      <div class="ps-price-lbl">Investissement</div>
+      <div class="ps-price-val" id="ps-price"></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px">USDT</div>
+    </div>
+    <div class="ps-stats">
+      <div class="ps-stat"><div class="ps-stat-val b" id="ps-days"></div><div class="ps-stat-lbl">Durée</div></div>
+      <div class="ps-stat"><div class="ps-stat-val g" id="ps-daily"></div><div class="ps-stat-lbl">Profit/Jour</div></div>
+      <div class="ps-stat"><div class="ps-stat-val g" id="ps-total"></div><div class="ps-stat-lbl">Profit Total</div></div>
+      <div class="ps-stat"><div class="ps-stat-val o" id="ps-fee"></div><div class="ps-stat-lbl">Frais/Sam.</div></div>
+    </div>
+    <div class="ps-weekly">
+      <div class="ps-weekly-title">Retraits chaque Samedi</div>
+      <div id="ps-weekly-rows"></div>
+    </div>
+    <div class="ps-btn-wrap">
+      <button class="btn-modal" onclick="activatePlan()">Activer ce Plan →</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEPOSIT MODAL -->
+<div class="modal-overlay" id="modal-deposit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Recharger USDT</div>
+    <div class="modal-sub">Choisissez votre réseau de dépôt</div>
+    <div class="net-tabs">
+      <div class="net-tab active" id="ntab-bep20" onclick="selectNet('bep20')">BEP20 (BNB)</div>
+      <div class="net-tab" id="ntab-trc20" onclick="selectNet('trc20')">TRC20 (TRON)</div>
+    </div>
+    <div class="addr-box">
+      <div class="addr-net" id="dep-net-lbl">Réseau: BEP20 — BNB Chain</div>
+      <div class="addr-text" id="dep-addr">0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396</div>
+      <button class="btn-copy" onclick="copyDepAddr()">Copier l'adresse</button>
+    </div>
+    <div class="modal-info"><strong>Important:</strong> Envoyez uniquement du USDT sur le réseau sélectionné. Tout autre token sera perdu.</div>
+    <div class="m-field"><label>Montant envoyé (USDT)</label><input type="number" placeholder="Ex: 25" id="dep-amount"></div>
+    <div class="m-field"><label>Hash de transaction</label><input type="text" placeholder="Collez le hash ici" id="dep-hash"></div>
+    <button class="btn-modal" onclick="submitDeposit()">Confirmer le dépôt</button>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="modal-withdraw">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Demande de Retrait</div>
+    <div class="modal-sub">Retraits effectués chaque Samedi uniquement</div>
+    <div class="modal-info">
+      <strong>Réseau:</strong> BEP20 (BNB Chain) uniquement<br>
+      <strong>Minimum:</strong> $10 USDT<br>
+      <strong>Traitement:</strong> Chaque Samedi
+    </div>
+    <div class="m-field"><label>Votre adresse BEP20</label><input type="text" placeholder="0x... adresse BEP20" id="wd-addr"></div>
+    <div class="m-field">
+      <label>Montant à retirer (min. $10)</label>
+      <input type="number" placeholder="Ex: 10" id="wd-amount" oninput="previewFee(this.value)" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;font-family:Inter,sans-serif">
+    </div>
+    <div id="wd-fee-preview" style="display:none;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(21,101,255,0.2)">
+      <div style="background:rgba(21,101,255,0.06);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)">
+        <span style="font-size:11px;color:var(--text2)">Montant demandé</span>
+        <span id="wd-prev-amt" style="font-weight:700;font-size:13px">$0.00</span>
+      </div>
+      <div style="background:rgba(21,101,255,0.06);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)">
+        <span style="font-size:11px;color:var(--text2)">Frais plateforme</span>
+        <span id="wd-prev-fee" style="font-weight:700;font-size:13px;color:var(--red)">-$0.00</span>
+      </div>
+      <div style="background:rgba(0,201,122,0.06);padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:700;color:var(--text2)">Vous recevrez</span>
+        <span id="wd-prev-net" style="font-weight:900;font-size:18px;color:var(--green)">$0.00</span>
+      </div>
+    </div>
+    <div id="wd-sat-info" style="display:none;background:rgba(255,179,0,0.08);border:1px solid rgba(255,179,0,0.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gold)"><strong>Retraits uniquement le Samedi!</strong><br><span id="wd-next-sat"></span></div>
+    <button class="btn-modal" onclick="submitWithdraw()">Soumettre la demande</button>
+  </div>
+</div>
+
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="modal-invite">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Inviter des Amis</div>
+    <div class="modal-sub">Gagnez des commissions sur chaque plan acheté</div>
+    <div class="addr-box">
+      <div class="addr-net">Votre lien de parrainage</div>
+      <div class="addr-text" id="invite-link-text">pawins.com/ref/USER123</div>
+      <button class="btn-copy" onclick="copyInviteLink()">Copier le lien</button>
+    </div>
+    <div class="modal-info">
+      VIP 1-3: <strong style="color:var(--green)">3%</strong> de commission  | 
+      VIP 4-5: <strong style="color:var(--green)">4%</strong> de commission
+    </div>
+    <button class="btn-modal sec" onclick="closeModal('modal-invite')">Fermer</button>
+  </div>
+</div>
+
+<!-- RECU MODAL -->
+<div class="modal-overlay" id="modal-recu">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="recu-card">
+      <div class="recu-logo">PAWINS</div>
+      <div class="recu-sub">Reçu de Retrait</div>
+      <div class="recu-amount" id="recu-amount">$0.00</div>
+      <div class="recu-usdt">USDT — BEP20</div>
+      <div class="recu-divider"></div>
+      <div class="recu-row"><span class="recu-lbl">Nom</span><span class="recu-val" id="recu-name">—</span></div>
+      <div class="recu-row"><span class="recu-lbl">Date</span><span class="recu-val" id="recu-date">—</span></div>
+      <div class="recu-row"><span class="recu-lbl">Adresse</span><span class="recu-val" id="recu-addr" style="font-size:10px;max-width:160px;text-align:right">—</span></div>
+      <div class="recu-row"><span class="recu-lbl">Montant net</span><span class="recu-val" style="color:var(--green)" id="recu-net">$0.00</span></div>
+      <div class="recu-row"><span class="recu-lbl">Frais plateforme</span><span class="recu-val" style="color:var(--red)" id="recu-fee">$0.00</span></div>
+      <div class="recu-row"><span class="recu-lbl">Référence</span><span class="recu-val" id="recu-num" style="color:var(--text2)">—</span></div>
+      <div class="recu-status">En attente — Samedi prochain</div>
+      <div class="recu-seal">PAWINS Investment Platform &copy; 2026</div>
+    </div>
+    <button class="btn-modal" onclick="closeModal('modal-recu')">Fermer</button>
+  </div>
+</div>
+
+<!-- SUPPORT MODAL -->
+<div class="modal-overlay" id="modal-support">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Support PAWINS</div>
+    <div class="modal-sub">Notre équipe est disponible 24h/24</div>
+    <div class="support-option" onclick="openSupport()">
+      <div class="support-tg-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.013 9.487c-.149.658-.538.818-1.09.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.073 4.17 13.18c-.64-.2-.652-.64.136-.948l10.896-4.202c.532-.193.998.13.36.218z"/></svg>
+      </div>
+      <div>
+        <div class="support-title">Service Client Officiel</div>
+        <div class="support-sub">Réponse rapide — Telegram</div>
+      </div>
+      <div style="margin-left:auto;color:var(--text2);font-size:18px">›</div>
+    </div>
+    <div style="margin-top:6px">
+      <div class="m-field"><label>Votre message</label><input type="text" placeholder="Décrivez votre problème..." id="support-msg"></div>
+      <button class="btn-modal" onclick="sendSupportMsg()">Envoyer le message</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP MODAL -->
+<div class="modal-overlay" id="modal-app">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Installer l'Application</div>
+    <div class="modal-sub">Accédez à PAWINS depuis votre écran d'accueil</div>
+    <div class="modal-info">
+      <strong>iPhone (Safari):</strong><br>
+      1. Appuyez sur le bouton Partager<br>
+      2. "Sur l'écran d'accueil"<br>
+      3. "Ajouter"<br><br>
+      <strong>Android (Chrome):</strong><br>
+      1. Menu en haut à droite<br>
+      2. "Ajouter à l'écran d'accueil"
+    </div>
+    <button class="btn-modal" onclick="closeModal('modal-app')">Compris!</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-logo">PAWINS</div>
+    <div class="topbar-right">
+      <div class="topbar-icon" onclick="openModal('modal-support')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="topbar-avatar" id="tb-avatar">P</div>
+    </div>
+  </div>
+
+  <div class="calendar-ticker">
+    <div class="calendar-track" id="cal-track"></div>
+  </div>
+
+  <div class="flags-ticker">
+    <div class="flags-track" id="flags-track"></div>
+  </div>
+
+  <div class="app-content">
+
+    <!-- MAISON -->
+    <div class="tab-view active" id="tab-maison">
+      <div style="padding:16px 18px 0">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:2px">Bonjour,</div>
+        <div style="font-size:18px;font-weight:800" id="home-name">Utilisateur</div>
+      </div>
+      <!-- Launch countdown -->
+      <div id="launch-banner" style="display:none;margin:12px 18px 0;background:linear-gradient(135deg,rgba(255,179,0,0.1),rgba(255,179,0,0.05));border:1px solid rgba(255,179,0,0.3);border-radius:14px;padding:12px 16px">
+        <div style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;margin-bottom:4px">Lancement Officiel</div>
+        <div style="font-size:15px;font-weight:800">Lundi 23 Juin 2026</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px" id="launch-countdown">Calcul en cours...</div>
+      </div>
+      <div class="balance-card">
+        <div class="balance-label">Solde Total</div>
+        <div class="balance-amount">$<span id="home-balance">0.00</span></div>
+        <div class="balance-usdt">USDT disponible</div>
+        <div class="balance-actions">
+          <button class="bal-btn deposit" onclick="openModal('modal-deposit')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            Recharger
+          </button>
+          <button class="bal-btn withdraw" onclick="openModal('modal-withdraw')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            Retrait
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-lbl">Membres Équipe</div><div class="stat-val b" id="home-team">0</div></div>
+        <div class="stat-card"><div class="stat-lbl">Revenu Équipe</div><div class="stat-val g">$<span id="home-team-rev">0.00</span></div></div>
+        <div class="stat-card"><div class="stat-lbl">Revenu Total</div><div class="stat-val g">$<span id="home-total-rev">0.00</span></div></div>
+        <div class="stat-card"><div class="stat-lbl">Plan Actif</div><div class="stat-val b" id="home-plan">—</div></div>
+      </div>
+
+      <div class="sec-title">Actions Rapides</div>
+      <div class="actions-grid">
+        <div class="action-btn" onclick="openModal('modal-deposit')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </div>
+          <div class="action-label">Recharger</div>
+        </div>
+        <div class="action-btn" onclick="openModal('modal-withdraw')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 7l-5-5-5 5"/><path d="M3 17h18"/></svg>
+          </div>
+          <div class="action-label">Retrait</div>
+        </div>
+        <div class="action-btn" onclick="openModal('modal-invite')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div class="action-label">Inviter</div>
+        </div>
+        <div class="action-btn" onclick="switchTab('bassin')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="action-label">Plans VIP</div>
+        </div>
+        <div class="action-btn" onclick="openModal('modal-support')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="action-label">Support</div>
+        </div>
+        <div class="action-btn" onclick="openModal('modal-app')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div class="action-label">Application</div>
+        </div>
+      </div>
+
+      <div class="team-section">
+        <div class="sec-title">Notre Équipe</div>
+        <div class="team-scroll">
+          <div class="team-track" id="team-track"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASSIN -->
+    <div class="tab-view" id="tab-bassin">
+      <div class="bassin-header">
+        <div class="bassin-title">Plans VIP</div>
+        <div class="bassin-sub">Appuyez sur un plan pour voir la simulation</div>
+      </div>
+      <div class="vip-cards" id="vip-cards"></div>
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- EKIP -->
+    <div class="tab-view" id="tab-ekip">
+      <div class="ekip-wrap">
+        <div class="ekip-hero">
+          <h2>Votre Équipe</h2>
+          <p>Invitez des amis, gagnez des commissions automatiques</p>
+          <div class="ref-box" onclick="copyInviteLink()">
+            <span id="ekip-ref">pawins.com/ref/USER123</span>
+            <span style="font-size:11px">Copier</span>
+          </div>
+        </div>
+        <div class="ekip-stats">
+          <div class="ekip-stat"><div class="ekip-stat-val" id="ekip-count">0</div><div class="ekip-stat-lbl">Membres</div></div>
+          <div class="ekip-stat"><div class="ekip-stat-val">$<span id="ekip-rev">0.00</span></div><div class="ekip-stat-lbl">Revenu Équipe</div></div>
+        </div>
+        <div class="comm-title">Commissions par Plan</div>
+        <div class="comm-table">
+          <div class="comm-row"><span class="comm-plan">VIP 1</span><span class="comm-pct">3%</span><span class="comm-earn">$0.75</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 2</span><span class="comm-pct">3%</span><span class="comm-earn">$1.20</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 3</span><span class="comm-pct">3%</span><span class="comm-earn">$1.50</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 4</span><span class="comm-pct">4%</span><span class="comm-earn">$2.40</span></div>
+          <div class="comm-row"><span class="comm-plan">VIP 5</span><span class="comm-pct">4%</span><span class="comm-earn">$3.20</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOI -->
+    <div class="tab-view" id="tab-moi">
+      <div class="moi-wrap">
+        <div class="profile-card">
+          <div class="profile-avatar" id="moi-avatar">P</div>
+          <div class="profile-name" id="moi-name">—</div>
+          <div class="profile-email" id="moi-email">—</div>
+          <div class="profile-badge" id="moi-badge">AUCUN PLAN</div>
+        </div>
+        <div class="info-section">
+          <div class="info-row"><div class="info-left"><div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="info-lbl">Solde</span></div><span class="info-val" style="color:var(--blue-light)">$<span id="moi-balance">0.00</span></span></div>
+          <div class="info-row"><div class="info-left"><div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div><span class="info-lbl">Revenu Total</span></div><span class="info-val" style="color:var(--green)">$<span id="moi-rev">0.00</span></span></div>
+          <div class="info-row"><div class="info-left"><div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="info-lbl">Membres Équipe</span></div><span class="info-val" id="moi-team">0</span></div>
+          <div class="info-row"><div class="info-left"><div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><span class="info-lbl">Date Inscription</span></div><span class="info-val" id="moi-date">—</span></div>
+          <div class="info-row"><div class="info-left"><div class="info-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><span class="info-lbl">Code Référence</span></div><span class="info-val" style="color:var(--blue-light)" id="moi-ref">—</span></div>
+        </div>
+
+        <div class="settings-list">
+          <div class="setting-item" onclick="openModal('modal-withdraw')">
+            <div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/><path d="M3 17h18"/></svg></div><div><div class="setting-title">Retrait USDT</div><div class="setting-sub">Chaque Samedi — Min. $10</div></div></div>
+            <div class="setting-arrow">›</div>
+          </div>
+          <div class="setting-item" onclick="openModal('modal-invite')">
+            <div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div><div class="setting-title">Programme de Parrainage</div><div class="setting-sub">Invitez et gagnez des commissions</div></div></div>
+            <div class="setting-arrow">›</div>
+          </div>
+          <div class="setting-item" onclick="openModal('modal-support')">
+            <div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="setting-title">Support</div><div class="setting-sub">Contacter notre équipe</div></div></div>
+            <div class="setting-arrow">›</div>
+          </div>
+          <div class="setting-item" onclick="openModal('modal-app')">
+            <div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div><div class="setting-title">Installer l'Application</div><div class="setting-sub">Ajouter sur l'écran d'accueil</div></div></div>
+            <div class="setting-arrow">›</div>
+          </div>
+        </div>
+
+        <button class="logout-btn" onclick="doLogout()">Se déconnecter</button>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="tab-view" id="tab-faq">
+      <div class="faq-wrap">
+        <div class="faq-title">Questions Fréquentes</div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Comment déposer des USDT? <span class="faq-arrow">+</span></div><div class="faq-a">Allez dans "Recharger", choisissez votre réseau (BEP20 ou TRC20), copiez l'adresse, envoyez vos USDT et entrez le hash de transaction. Activation sous 30 minutes.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Quand puis-je retirer? <span class="faq-arrow">+</span></div><div class="faq-a">Les retraits s'effectuent chaque Samedi uniquement. Minimum $10 USDT. Vos profits s'accumulent quotidiennement jusqu'au samedi.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Comment fonctionne le parrainage? <span class="faq-arrow">+</span></div><div class="faq-a">Partagez votre lien unique. Quand un ami achète un plan, vous recevez automatiquement 3 à 4% du montant de son plan dans votre solde.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Quel réseau USDT utiliser? <span class="faq-arrow">+</span></div><div class="faq-a">Vous pouvez utiliser BEP20 (BNB Chain) ou TRC20 (TRON) pour les dépôts. Pour les retraits, nous utilisons uniquement le réseau BEP20.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Puis-je avoir plusieurs plans? <span class="faq-arrow">+</span></div><div class="faq-a">Un plan actif par compte à la fois. Une fois le plan terminé, vous pouvez en choisir un nouveau ou le même.</div></div>
+        <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Mon investissement est-il sécurisé? <span class="faq-arrow">+</span></div><div class="faq-a">Oui. Toutes les transactions sont vérifiées via la blockchain. Votre compte est protégé par authentification sécurisée.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-maison" onclick="switchTab('maison')"><span class="nav-ico">&#8962;</span><span class="nav-lbl">Accueil</span></div>
+    <div class="nav-item" id="nav-bassin" onclick="switchTab('bassin')"><span class="nav-ico">&#11088;</span><span class="nav-lbl">Bassin</span></div>
+    <div class="nav-item" id="nav-ekip" onclick="switchTab('ekip')"><span class="nav-ico">&#128101;</span><span class="nav-lbl">Équipe</span></div>
+    <div class="nav-item" id="nav-faq" onclick="switchTab('faq')"><span class="nav-ico">&#10067;</span><span class="nav-lbl">FAQ</span></div>
+    <div class="nav-item" id="nav-moi" onclick="switchTab('moi')"><span class="nav-ico">&#128100;</span><span class="nav-lbl">Moi</span></div>
+  </div>
+</div>
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey:"AIzaSyBPFxkA1JNXuXCrDh8cDJeZL-gxo717DD4",
+  authDomain:"pawins-bbdfc.firebaseapp.com",
+  projectId:"pawins-bbdfc",
+  storageBucket:"pawins-bbdfc.firebasestorage.app",
+  messagingSenderId:"245443495905",
+  appId:"1:245443495905:web:6cd012de019fe7f81774a0"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+
+
+// ===== APP LOGIC =====
+const plans=[
+  {id:1,name:'VIP 1',bg:'linear-gradient(135deg,#1D4ED8,#3B82F6)',price:25,days:22,daily:2.00,total:44.00,fee:4.00},
+  {id:2,name:'VIP 2',bg:'linear-gradient(135deg,#6D28D9,#8B5CF6)',price:40,days:30,daily:3.20,total:96.00,fee:6.00,featured:true},
+  {id:3,name:'VIP 3',bg:'linear-gradient(135deg,#065F46,#10B981)',price:50,days:38,daily:4.20,total:159.60,fee:8.00},
+  {id:4,name:'VIP 4',bg:'linear-gradient(135deg,#92400E,#F59E0B)',price:60,days:45,daily:6.00,total:270.00,fee:10.00},
+  {id:5,name:'VIP 5',bg:'linear-gradient(135deg,#9F1239,#F43F5E)',price:80,days:55,daily:8.00,total:440.00,fee:12.00},
+];
+
+const teamMembers=[
+  {name:'Alex M.',role:'Fondateur'},{name:'Sophie R.',role:'Directrice'},
+  {name:'Marc T.',role:'Analyste'},{name:'Julie P.',role:'Support'},
+  {name:'Kevin D.',role:'Tech Lead'},{name:'Sarah N.',role:'Finance'},
+  {name:'Lucas B.',role:'Marketing'},{name:'Emma V.',role:'Designer'},
+];
+
+const addresses={
+  bep20:'0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396',
+  trc20:'TYDHcrwhGkRH68u2fWat72iJoNFqhoadHy'
+};
+
+const flags=['🇭🇹','🇫🇷','🇺🇸','🇨🇦','🇧🇯','🇨🇮','🇸🇳','🇨🇲','🇬🇳','🇹🇬','🇧🇫','🇲🇱','🇬🇭','🇳🇬','🇧🇷','🇲🇦','🇩🇿','🇲🇬','🇨🇩','🇬🇦'];
+
+let currentNet='bep20';
+let currentPlan=null;
+window.user={nom:'',prenom:'',email:'',balance:0,totalRev:0,teamCount:0,teamRev:0,plan:null,refCode:'PWN000000',date:'—'};
+
+// Calendar
+function buildCalendar(){
+  const days=[
+    {name:'Lundi',idx:1},{name:'Mardi',idx:2},{name:'Mercredi',idx:3},
+    {name:'Jeudi',idx:4},{name:'Vendredi',idx:5},
+    {name:'SAMEDI — Jour des Retraits',idx:6,sam:true},{name:'Dimanche',idx:0}
+  ];
+  const today=new Date().getDay();
+  let html='';
+  for(let i=0;i<2;i++){
+    days.forEach(d=>{
+      let cls='cal-day';
+      if(d.sam)cls+=' samedi';
+      else if(d.idx===today)cls+=' today';
+      html+=`<div class="${cls}"><div class="cal-dot"></div>${d.name}${d.idx===today&&!d.sam?' (Aujourd\'hui)':''}</div>`;
+    });
+  }
+  document.getElementById('cal-track').innerHTML=html;
+}
+
+// Flags
+function buildFlags(){
+  const doubled=[...flags,...flags];
+  document.getElementById('flags-track').innerHTML=doubled.map(f=>`<div class="flag-item">${f}</div>`).join('');
+}
+
+// VIP Cards
+function buildVipCards(){
+  document.getElementById('vip-cards').innerHTML=plans.map(p=>`
+    <div class="vip-card${p.featured?' featured':''}" onclick="openPlanSheet(${p.id})">
+      ${p.featured?'<div class="vip-pop">POPULAIRE</div>':''}
+      <div class="vip-head">
+        <div class="vip-name"><div class="vip-icon" style="background:${p.bg}">${p.id}</div>${p.name}</div>
+        <div class="vip-price">$${p.price}<span>/plan</span></div>
+      </div>
+      <div class="vip-grid">
+        <div class="vip-cell"><div class="vip-cell-lbl">Durée</div><div class="vip-cell-val">${p.days} jours</div></div>
+        <div class="vip-cell"><div class="vip-cell-lbl">Profit/jour</div><div class="vip-cell-val g">$${p.daily.toFixed(2)}</div></div>
+        <div class="vip-cell"><div class="vip-cell-lbl">Profit Total</div><div class="vip-cell-val g">$${p.total.toFixed(2)}</div></div>
+        <div class="vip-cell"><div class="vip-cell-lbl">Frais/Sam.</div><div class="vip-cell-val o">$${p.fee.toFixed(2)}</div></div>
+      </div>
+      <div class="vip-foot">
+        <button class="btn-vip" style="background:${p.bg}">Voir les détails →</button>
+        <div class="vip-hint">Appuyez pour voir la simulation complète</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Team - avatars fixes
+function buildTeam(){
+  const doubled=[...teamMembers,...teamMembers];
+  const palettes=[
+    ['#1565FF','#4D8EFF'],['#7C3AED','#A78BFA'],['#059669','#34D399'],
+    ['#D97706','#FCD34D'],['#DC2626','#F87171'],['#0891B2','#67E8F9'],
+    ['#7C3AED','#C4B5FD'],['#BE185D','#F9A8D4']
+  ];
+  document.getElementById('team-track').innerHTML=doubled.map((m,i)=>{
+    const pal=palettes[i%palettes.length];
+    const initials=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `<div class="team-member">
+      <div class="team-avatar" style="background:linear-gradient(135deg,${pal[0]},${pal[1]});border:2px solid rgba(255,255,255,0.15);box-shadow:0 4px 15px rgba(0,0,0,0.3)">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:2px">
+          <div style="font-size:20px;font-weight:900;color:white;letter-spacing:-0.5px">${initials}</div>
+          <div style="font-size:6px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:1px">PAWINS</div>
+        </div>
+      </div>
+      <div class="team-name">${m.name}</div>
+      <div class="team-role">${m.role}</div>
+    </div>`;
+  }).join('');
+}
+
+// UI
+function updateUI(){
+  const u=window.user;
+  const fullName=(u.nom+' '+u.prenom).trim()||'Utilisateur';
+  document.getElementById('home-name').textContent=fullName;
+  document.getElementById('home-balance').textContent=u.balance.toFixed(2);
+  document.getElementById('home-team').textContent=u.teamCount;
+  document.getElementById('home-team-rev').textContent=u.teamRev.toFixed(2);
+  document.getElementById('home-total-rev').textContent=u.totalRev.toFixed(2);
+  document.getElementById('home-plan').textContent=u.plan?'VIP '+u.plan:'—';
+  document.getElementById('tb-avatar').textContent=(u.nom||'P').charAt(0).toUpperCase();
+  document.getElementById('moi-avatar').textContent=(u.nom||'P').charAt(0).toUpperCase();
+  document.getElementById('moi-name').textContent=fullName;
+  document.getElementById('moi-email').textContent=u.email;
+  document.getElementById('moi-badge').textContent=u.plan?'VIP '+u.plan+' ACTIF':'AUCUN PLAN';
+  document.getElementById('moi-balance').textContent=u.balance.toFixed(2);
+  document.getElementById('moi-rev').textContent=u.totalRev.toFixed(2);
+  document.getElementById('moi-team').textContent=u.teamCount;
+  document.getElementById('moi-date').textContent=u.date;
+  document.getElementById('moi-ref').textContent=u.refCode;
+  document.getElementById('ekip-count').textContent=u.teamCount;
+  document.getElementById('ekip-rev').textContent=u.teamRev.toFixed(2);
+  const refLink='https://pawinscrypto.com/?ref='+u.refCode;
+  document.getElementById('ekip-ref').textContent=refLink;
+  document.getElementById('invite-link-text').textContent=refLink;
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+  document.querySelector('.app-content').scrollTop=0;
+}
+
+function openModal(id){
+  if(!isPlanAvailable() && (id==='modal-deposit'||id==='modal-withdraw')){
+    showLaunchOverlay();
+    return;
+  }
+  document.getElementById(id).classList.add('active');
+}
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('active')});
+});
+
+function selectNet(net){
+  currentNet=net;
+  document.getElementById('dep-addr').textContent=addresses[net];
+  document.getElementById('dep-net-lbl').textContent=net==='bep20'?'Réseau: BEP20 — BNB Chain':'Réseau: TRC20 — TRON';
+  document.getElementById('ntab-bep20').className='net-tab'+(net==='bep20'?' active':'');
+  document.getElementById('ntab-trc20').className='net-tab'+(net==='trc20'?' active':'');
+}
+
+function copyDepAddr(){
+  navigator.clipboard.writeText(addresses[currentNet]).catch(()=>{});
+  showToast('Adresse copiée!','success');
+}
+
+function copyInviteLink(){
+  navigator.clipboard.writeText('https://pawinscrypto.com/?ref='+window.user.refCode).catch(()=>{});
+  showToast('Lien copié!','success');
+  closeModal('modal-invite');
+}
+
+async function submitDeposit(){
+  if(!isPlanAvailable()){
+    closeModal('modal-deposit');
+    showLaunchOverlay();
+    return;
+  }
+  const amt=parseFloat(document.getElementById('dep-amount').value);
+  const hash=document.getElementById('dep-hash').value.trim();
+  if(!amt||amt<=0){showToast('Entrez le montant envoyé','error');return;}
+  if(!hash){showToast('Entrez le hash de transaction','error');return;}
+  // Kob la parèt imedyatman
+  window.user.balance=(window.user.balance||0)+amt;
+  window.user.baseBalance=window.user.balance;
+  // Save to Firebase
+  if(window.user.uid){
+    try{
+      await db.collection('users').doc(window.user.uid).update({
+        balance: window.user.balance
+      });
+      // Save transaction
+      await db.collection('transactions').add({
+        userId: window.user.uid,
+        type: 'depot',
+        montant: amt,
+        reseau: currentNet,
+        hash: hash,
+        statut: 'confirme',
+        date: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }catch(e){console.log('Firebase depot:',e);}
+  }
+  updateUI();
+  closeModal('modal-deposit');
+  document.getElementById('dep-amount').value='';
+  document.getElementById('dep-hash').value='';
+  showToast('Dépôt confirmé! +$'+amt.toFixed(2)+' USDT','success');
+}
+
+function isSaturday(){return new Date().getDay()===6;}
+
+function showLaunchOverlay(){
+  updateOverlayCountdown();
+  document.getElementById('launch-overlay').style.display='flex';
+}
+
+function closeOverlay(){
+  document.getElementById('launch-overlay').style.display='none';
+}
+
+function updateOverlayCountdown(){
+  const launch=new Date('2026-06-23T00:00:00');
+  const now=new Date();
+  const diff=launch-now;
+  if(diff<=0){
+    document.getElementById('overlay-countdown').textContent='Disponible maintenant!';
+    return;
+  }
+  const days=Math.floor(diff/(1000*60*60*24));
+  const hrs=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const mins=Math.floor((diff%(1000*60*60))/(1000*60));
+  const secs=Math.floor((diff%60000)/1000);
+  document.getElementById('overlay-countdown').textContent=days+'j '+hrs+'h '+mins+'m '+secs+'s';
+}
+
+function previewFee(val){
+  const amt=parseFloat(val)||0;
+  const u=window.user;
+  const p=plans.find(x=>x.id===u.plan);
+  const preview=document.getElementById('wd-fee-preview');
+  if(!p){
+    // Pa gen plan aktif - pa montre frais
+    preview.style.display='none';
+    return;
+  }
+  const fee=p.fee;
+  const net=Math.max(0,amt-fee);
+  if(amt>0){
+    preview.style.display='block';
+    document.getElementById('wd-prev-amt').textContent='$'+amt.toFixed(2);
+    document.getElementById('wd-prev-fee').textContent='-$'+fee.toFixed(2);
+    document.getElementById('wd-prev-net').textContent='$'+net.toFixed(2);
+  } else {
+    preview.style.display='none';
+  }
+}
+function getNextSaturday(){
+  const now=new Date();const d=now.getDay();
+  const diff=d===6?7:(6-d);const next=new Date(now);
+  next.setDate(now.getDate()+diff);
+  return next.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function calcDailyProfit(){
+  const u=window.user;
+  if(!u.plan||!u.planStartDate)return;
+  const p=plans.find(x=>x.id===u.plan);if(!p)return;
+  const now=new Date();const start=new Date(u.planStartDate);
+  const diffDays=Math.floor((now-start)/(1000*60*60*24));
+  const earned=Math.min(diffDays,p.days)*p.daily;
+  if(earned>0){u.balance=(u.baseBalance||0)+earned;u.totalRev=(u.baseRev||0)+earned;}
+}
+
+function applyReferralBonus(refererId,planId){
+  // En production: Firebase cloud function
+  // Ici: simulation locale
+  const p=plans.find(x=>x.id===planId);if(!p)return;
+  const pct=p.id>=4?0.04:0.03;
+  const bonus=p.price*pct;
+  console.log('Bonus referral:',bonus,'pour',refererId);
+}
+
+function submitWithdraw(){
+  if(!isPlanAvailable()){
+    closeModal('modal-withdraw');
+    showLaunchOverlay();
+    return;
+  }
+  const addr=document.getElementById('wd-addr').value.trim();
+  const amt=parseFloat(document.getElementById('wd-amount').value);
+  if(!addr){showToast('Entrez votre adresse BEP20','error');return;}
+  if(!addr.startsWith('0x')||addr.length<40){showToast('Adresse BEP20 invalide (doit commencer par 0x)','error');return;}
+  if(!amt||amt<10){showToast('Minimum $10 USDT','error');return;}
+  if(window.user.balance<amt){showToast('Solde insuffisant','error');return;}
+  if(!isSaturday()){
+    const next=getNextSaturday();
+    showToast('Retraits uniquement le Samedi','error');
+    document.getElementById('wd-sat-info').style.display='block';
+    document.getElementById('wd-next-sat').textContent='Prochain Samedi: '+next;
+    return;
+  }
+  // Get plan fee
+  const u=window.user;
+  const p=plans.find(x=>x.id===u.plan);
+  const fee=p?p.fee:0;
+  const net=amt-fee;
+  if(net<=0){showToast('Montant insuffisant après frais','error');return;}
+  closeModal('modal-withdraw');
+  // Save to Firebase
+  if(window.user.uid){
+    db.collection('transactions').add({
+      userId: window.user.uid,
+      type: 'retrait',
+      nomClient: (u.nom+' '+u.prenom).trim(),
+      email: u.email||'',
+      phone: u.phone||'',
+      montant: amt,
+      adresse: addr,
+      planId: u.plan||null,
+      statut: 'en_attente',
+      date: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(e=>console.log(e));
+  }
+  const now=new Date();
+  document.getElementById('recu-amount').textContent='$'+amt.toFixed(2);
+  document.getElementById('recu-net').textContent='$'+net.toFixed(2);
+  document.getElementById('recu-fee').textContent='$'+fee.toFixed(2);
+  document.getElementById('recu-name').textContent=(u.nom+' '+u.prenom).trim();
+  document.getElementById('recu-date').textContent=now.toLocaleDateString('fr-FR');
+  document.getElementById('recu-addr').textContent=addr.slice(0,10)+'...'+addr.slice(-6);
+  document.getElementById('recu-num').textContent='#PWN'+Date.now().toString().slice(-8);
+  setTimeout(()=>{
+    openModal('modal-recu');
+    showToast('Demande envoyée! Traitement le Samedi','success');
+  },300);
+}
+
+function openPlanSheet(id){
+  const p=plans.find(x=>x.id===id);
+  currentPlan=p;
+  document.getElementById('ps-name').textContent=p.name;
+  document.getElementById('ps-price').textContent='$'+p.price;
+  document.getElementById('ps-days').textContent=p.days+' jours';
+  document.getElementById('ps-daily').textContent='$'+p.daily.toFixed(2);
+  document.getElementById('ps-total').textContent='$'+p.total.toFixed(2);
+  document.getElementById('ps-fee').textContent='$'+p.fee.toFixed(2);
+  let rows='';
+  const weeks=Math.ceil(p.days/7);
+  for(let w=1;w<=weeks;w++){
+    const d=Math.min(7,p.days-(w-1)*7);
+    rows+=`<div class="ps-weekly-row"><div class="ps-weekly-lbl">Samedi ${w} (${d} jours)</div><div class="ps-weekly-val">+$${(d*p.daily).toFixed(2)}</div></div>`;
+  }
+  document.getElementById('ps-weekly-rows').innerHTML=rows;
+  document.getElementById('planSheet').classList.add('active');
+}
+
+function closePlanSheet(){document.getElementById('planSheet').classList.remove('active')}
+document.getElementById('planSheet').addEventListener('click',function(e){if(e.target===this)closePlanSheet()});
+
+// Launch date lock
+const LAUNCH_DATE = new Date('2026-06-23T00:00:00');
+function isPlanAvailable(){ return new Date() >= LAUNCH_DATE; }
+
+function activatePlan(){
+  if(!currentPlan)return;
+  if(!isPlanAvailable()){
+    closePlanSheet();
+    showLaunchOverlay();
+    return;
+  }
+  if(window.user.balance<currentPlan.price){
+    closePlanSheet();
+    setTimeout(()=>{showToast('Solde insuffisant — Rechargez d\'abord','error');openModal('modal-deposit');},300);
+    return;
+  }
+  window.user.plan=currentPlan.id;
+  window.user.balance-=currentPlan.price;
+  window.user.baseBalance=window.user.balance;
+  window.user.baseRev=window.user.totalRev;
+  window.user.planStartDate=new Date().toISOString();
+  localStorage.setItem('pawins_plan',JSON.stringify({id:currentPlan.id,start:window.user.planStartDate,baseBalance:window.user.baseBalance,baseRev:window.user.baseRev}));
+  if(window.user.uid){
+    db.collection('users').doc(window.user.uid).update({
+      planActif:currentPlan.id,
+      planStartDate:window.user.planStartDate,
+      balance:window.user.balance
+    }).catch(e=>console.log(e));
+  }
+  // Referral bonus
+  applyReferralBonus(currentPlan);
+  updateUI();
+  closePlanSheet();
+  showToast('VIP '+currentPlan.id+' activé avec succès!','success');
+}
+
+async function applyReferralBonus(plan){
+  try{
+    const refCode=localStorage.getItem('pawins_ref');
+    if(!refCode) return;
+    // Pa bay bonus si se menm moun nan
+    if(refCode===window.user.refCode) return;
+    // Jwenn parenn nan Firestore
+    const snap=await db.collection('users').where('refCode','==',refCode).limit(1).get();
+    if(snap.empty) return;
+    const parentDoc=snap.docs[0];
+    const parentData=parentDoc.data();
+    // Kalkile bonus
+    const pct=plan.id>=4?0.04:0.03;
+    const bonus=plan.price*pct;
+    // Ajoute bonus sou kont parenn
+    await db.collection('users').doc(parentDoc.id).update({
+      balance: (parentData.balance||0)+bonus,
+      teamRevenu: (parentData.teamRevenu||0)+bonus,
+      teamCount: (parentData.teamCount||0)+1
+    });
+    // Notifye parenn
+    await db.collection('notifications').add({
+      userId: parentDoc.id,
+      type: 'bonus_referral',
+      message: 'Bonus parrainage +$'+bonus.toFixed(2)+' USDT (VIP '+plan.id+')',
+      montant: bonus,
+      lu: false,
+      date: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // Retire refCode pou pa bay bonus 2 fwa
+    localStorage.removeItem('pawins_ref');
+  }catch(e){
+    console.log('Referral error:',e);
+  }
+}
+
+function openSupport(){window.open('https://t.me/+NCLRtkec9kxlMmE5','_blank')}
+
+function sendSupportMsg(){
+  const msg=document.getElementById('support-msg').value.trim();
+  if(!msg){showToast('Écrivez votre message','error');return;}
+  closeModal('modal-support');
+  showToast('Message envoyé au support!','success');
+}
+
+function toggleFaq(el){
+  const open=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f=>f.classList.remove('open'));
+  if(!open)el.classList.add('open');
+}
+
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// Load saved plan
+try{
+  const saved=localStorage.getItem('pawins_plan');
+  if(saved){
+    const sp=JSON.parse(saved);
+    if(!window.user.plan){
+      window.user.plan=sp.id;
+      window.user.planStartDate=sp.start;
+      window.user.baseBalance=sp.baseBalance||0;
+      window.user.baseRev=sp.baseRev||0;
+      calcDailyProfit();
+    }
+  }
+}catch(e){}
+
+// Expose functions to HTML onclick
+window.switchTab=switchTab;
+window.openModal=openModal;
+window.closeModal=closeModal;
+window.selectNet=selectNet;
+window.copyDepAddr=copyDepAddr;
+window.copyInviteLink=copyInviteLink;
+window.submitDeposit=submitDeposit;
+window.submitWithdraw=submitWithdraw;
+window.openPlanSheet=openPlanSheet;
+window.closePlanSheet=closePlanSheet;
+window.activatePlan=activatePlan;
+window.openSupport=openSupport;
+window.sendSupportMsg=sendSupportMsg;
+window.toggleFaq=toggleFaq;
+window.showToast=showToast;
+window.calcDailyProfit=calcDailyProfit;
+
+buildCalendar();
+buildFlags();
+buildVipCards();
+buildTeam();
+
+// Launch countdown
+function updateLaunchBanner(){
+  const launch=new Date('2026-06-23T00:00:00');
+  const now=new Date();
+  const banner=document.getElementById('launch-banner');
+  if(now<launch){
+    banner.style.display='block';
+    const diff=launch-now;
+    const days=Math.floor(diff/(1000*60*60*24));
+    const hrs=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    const mins=Math.floor((diff%(1000*60*60))/(1000*60));
+    document.getElementById('launch-countdown').textContent=
+      'Lancement dans: '+days+'j '+hrs+'h '+mins+'min';
+  } else {
+    banner.style.display='none';
+  }
+}
+updateLaunchBanner();
+setInterval(updateLaunchBanner, 60000);
+setInterval(()=>{
+  if(document.getElementById('launch-overlay').style.display==='flex'){
+    updateOverlayCountdown();
+  }
+},1000);
+
+
+auth.onAuthStateChanged(async (firebaseUser) => {
+  if(!firebaseUser){
+    window.location.href='inscription.html';
+    return;
+  }
+  try {
+    const snap = await db.collection('users').doc(firebaseUser.uid).get();
+    if(snap.exists){
+      const data = snap.data();
+      // Nom: Firebase data en premier
+      const nom = data.nom || (firebaseUser.displayName||'').split(' ')[0] || '';
+      const prenom = data.prenom || (firebaseUser.displayName||'').split(' ').slice(1).join(' ') || '';
+      window.user = {
+        uid: firebaseUser.uid,
+        nom: nom,
+        prenom: prenom,
+        email: data.email||firebaseUser.email||'',
+        balance: data.balance||0,
+        baseBalance: data.balance||0,
+        totalRev: data.totalRevenu||0,
+        baseRev: data.totalRevenu||0,
+        teamCount: data.teamCount||0,
+        teamRev: data.teamRevenu||0,
+        plan: data.planActif||null,
+        planStartDate: data.planStartDate||null,
+        refCode: data.refCode||('PWN'+firebaseUser.uid.slice(0,6).toUpperCase()),
+        date: data.dateInscription?.toDate?.()?.toLocaleDateString('fr-FR')||'—'
+      };
+    } else {
+      // Nouvo kliyan Google
+      const nom = (firebaseUser.displayName||'').split(' ')[0]||'';
+      const prenom = (firebaseUser.displayName||'').split(' ').slice(1).join(' ')||'';
+      window.user = {
+        uid: firebaseUser.uid,
+        nom: nom,
+        prenom: prenom,
+        email: firebaseUser.email||'',
+        balance:0,baseBalance:0,totalRev:0,baseRev:0,
+        teamCount:0,teamRev:0,
+        plan:null,planStartDate:null,
+        refCode:'PWN'+firebaseUser.uid.slice(0,6).toUpperCase(),
+        date: new Date().toLocaleDateString('fr-FR')
+      };
+    }
+    // Calcul pwofì chak jou
+    if(window.user.plan && window.user.planStartDate){
+      calcDailyProfit();
+    }
+    updateUI();
+    // Ekout notifikasyon an tan reyèl
+    listenNotifications(firebaseUser.uid);
+  } catch(e){
+    console.log('Erreur:', e);
+    updateUI();
+  }
+});
+
+async function doLogout(){
+  await auth.signOut();
+  window.location.href='inscription.html';
+}
+
+function listenNotifications(uid){
+  db.collection('notifications')
+    .where('userId','==',uid)
+    .where('lu','==',false)
+    .onSnapshot(snap=>{
+      snap.docChanges().forEach(change=>{
+        if(change.type==='added'){
+          const data=change.doc.data();
+          const type=data.type||'';
+          let toastType='info';
+          if(type==='retrait_approuve') toastType='success';
+          if(type==='retrait_rejete') toastType='error';
+          if(type==='bonus_referral') toastType='success';
+          showToast(data.message||'Nouvelle notification',toastType);
+          // Marke li lu
+          db.collection('notifications').doc(change.doc.id).update({lu:true});
+        }
+      });
+    });
+}
+</script>
+</body>
+</html>
