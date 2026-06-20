@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PAWINS — Plateforme d'Investissement USDT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#04080F;--bg2:#080E1A;--bg3:#0D1422;
+  --blue:#1565FF;--blue2:#0A45CC;--blue-light:#4D8EFF;
+  --text:#F0F4FF;--text2:#6B7FA3;--text3:#3D4F6E;
+  --green:#00C97A;--gold:#FFB300;
+  --card:#0A1020;--border:rgba(21,101,255,0.18);--border2:rgba(255,255,255,0.05);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;overflow-x:hidden}
+::-webkit-scrollbar{width:0}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:rgba(4,8,15,0.88);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.04)}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-mark{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:white;box-shadow:0 0 16px rgba(21,101,255,0.5)}
+.nav-name{font-size:16px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.btn-start{background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:10px;padding:9px 18px;color:white;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 14px rgba(21,101,255,0.4)}
+.btn-start:active{transform:scale(0.97)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero-orb1{position:absolute;top:10%;left:-20%;width:280px;height:280px;background:radial-gradient(circle,rgba(21,101,255,0.12) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.hero-orb2{position:absolute;bottom:15%;right:-20%;width:220px;height:220px;background:radial-gradient(circle,rgba(77,142,255,0.08) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+
+/* Logo */
+.hero-logo-ring{width:90px;height:90px;border:2px solid rgba(21,101,255,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;animation:ringPulse 3s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{border-color:rgba(21,101,255,0.35)}50%{border-color:rgba(21,101,255,0.85)}}
+.hero-logo-inner{width:68px;height:68px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:white;box-shadow:0 0 40px rgba(21,101,255,0.6);animation:logoPulse 3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 40px rgba(21,101,255,0.6)}50%{box-shadow:0 0 70px rgba(21,101,255,0.95)}}
+.hero-name{font-size:40px;font-weight:900;letter-spacing:6px;background:linear-gradient(135deg,#fff 40%,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,201,122,0.1);border:1px solid rgba(0,201,122,0.25);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--green);font-weight:700;margin-bottom:20px;letter-spacing:0.5px}
+.hero-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:dotPulse 1.5s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-title{font-size:16px;color:var(--text2);line-height:1.7;margin-bottom:32px;max-width:300px}
+.hero-cta{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;margin:0 auto 40px}
+.btn-hero-main{background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:14px;padding:15px;color:white;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 6px 24px rgba(21,101,255,0.45);letter-spacing:0.3px}
+.btn-hero-main:active{transform:scale(0.98)}
+.btn-hero-sec{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* STATS */
+.hero-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;position:relative;z-index:1}
+.hero-stat{background:rgba(10,16,32,0.8);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center}
+.hero-stat-val{font-size:20px;font-weight:900;color:var(--blue-light);margin-bottom:3px}
+.hero-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px}
+
+/* LAUNCH COUNTDOWN */
+.launch-section{padding:28px 20px;background:var(--bg2);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);text-align:center}
+.launch-label{font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:8px}
+.launch-date{font-size:22px;font-weight:900;margin-bottom:10px}
+.countdown-boxes{display:flex;justify-content:center;gap:8px}
+.cd-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;min-width:60px;text-align:center}
+.cd-num{font-size:24px;font-weight:900;color:var(--blue-light);line-height:1}
+.cd-lbl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+
+/* HOW IT WORKS */
+.section{padding:40px 20px}
+.section-title{font-size:20px;font-weight:800;margin-bottom:6px}
+.section-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6}
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{display:flex;align-items:flex-start;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+.step-num{width:38px;height:38px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:white;flex-shrink:0}
+.step-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.step-desc{font-size:12px;color:var(--text2);line-height:1.55}
+
+/* PLANS APERCU */
+.plans-apercu{display:flex;flex-direction:column;gap:10px}
+.plan-preview{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
+.plan-preview.featured{border-color:rgba(21,101,255,0.45);background:linear-gradient(135deg,rgba(21,101,255,0.06),rgba(10,16,32,1))}
+.plan-left{display:flex;align-items:center;gap:10px}
+.plan-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:white}
+.plan-pname{font-size:13px;font-weight:700}
+.plan-pprice{font-size:12px;color:var(--text2)}
+.plan-right{text-align:right}
+.plan-profit{font-size:16px;font-weight:800;color:var(--green)}
+.plan-days{font-size:11px;color:var(--text2)}
+.plan-pop{font-size:9px;background:var(--blue);color:white;padding:2px 7px;border-radius:5px;font-weight:800;margin-top:3px;display:inline-block}
+
+/* TEAM TRANSPARENT */
+.team-section{padding:32px 0;background:linear-gradient(to bottom,transparent,rgba(21,101,255,0.03),transparent);overflow:hidden}
+.team-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 20px;margin-bottom:16px}
+.team-track{display:flex;gap:16px;padding:0 20px;animation:teamScroll 22s linear infinite;width:max-content}
+@keyframes teamScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.team-member{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0;opacity:0.75}
+.team-avatar{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.1)}
+.team-name{font-size:11px;font-weight:700;color:var(--text2)}
+.team-role{font-size:9px;color:var(--text3)}
+
+/* CTA */
+.cta-section{padding:40px 20px;text-align:center;background:linear-gradient(135deg,rgba(21,101,255,0.08),transparent)}
+.cta-title{font-size:24px;font-weight:900;margin-bottom:8px}
+.cta-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6}
+.btn-cta{display:block;width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:14px;padding:15px;color:white;font-size:15px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 6px 24px rgba(21,101,255,0.4);text-decoration:none;text-align:center}
+
+/* FOOTER */
+footer{padding:24px 20px;border-top:1px solid var(--border2);text-align:center}
+.footer-logo{font-size:18px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.footer-copy{font-size:11px;color:var(--text3)}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <div class="nav-mark">P</div>
+    <div class="nav-name">PAWINS</div>
+  </div>
+  <button class="btn-start" onclick="goStart()">Commencer</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+
+  <div class="hero-logo-ring">
+    <div class="hero-logo-inner">P</div>
+  </div>
+
+  <div class="hero-name">PAWINS</div>
+
+  <div class="hero-badge">
+    <div class="hero-dot"></div>
+    Plateforme Active
+  </div>
+
+  <div class="hero-title">
+    Investissez vos USDT et collectez vos profits chaque Samedi
+  </div>
+
+  <div class="hero-cta">
+    <button class="btn-hero-main" onclick="goStart()">Commencer maintenant</button>
+    <button class="btn-hero-sec" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">Comment ça marche</button>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-val">5</div><div class="hero-stat-lbl">Plans VIP</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">100%</div><div class="hero-stat-lbl">Sécurisé</div></div>
+    <div class="hero-stat"><div class="hero-stat-val">Sam.</div><div class="hero-stat-lbl">Retraits</div></div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="launch-section">
+  <div class="launch-label">Lancement Officiel</div>
+  <div class="launch-date">Lundi 23 Juin 2026</div>
+  <div class="countdown-boxes">
+    <div class="cd-box"><div class="cd-num" id="cd-j">00</div><div class="cd-lbl">Jours</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Heures</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-m">00</div><div class="cd-lbl">Min</div></div>
+    <div class="cd-box"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Sec</div></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-title">Comment ça marche</div>
+  <div class="section-sub">3 étapes simples pour commencer à investir</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Créez votre compte</div>
+        <div class="step-desc">Inscrivez-vous en quelques secondes avec votre email ou Google</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Choisissez un Plan VIP</div>
+        <div class="step-desc">Déposez vos USDT via BEP20 ou TRC20 et activez votre plan</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Collectez chaque Samedi</div>
+        <div class="step-desc">Vos profits s'accumulent quotidiennement — retirez chaque Samedi</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="section" style="background:var(--bg2);padding-top:36px;padding-bottom:36px">
+  <div class="section-title">Plans VIP</div>
+  <div class="section-sub">Choisissez votre niveau d'investissement</div>
+  <div class="plans-apercu">
+    <div class="plan-preview">
+      <div class="plan-left">
+        <div class="plan-ico" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6)">1</div>
+        <div><div class="plan-pname">VIP 1</div><div class="plan-pprice">$25 USDT</div></div>
+      </div>
+      <div class="plan-right"><div class="plan-profit">+$44.00</div><div class="plan-days">22 jours</div></div>
+    </div>
+    <div class="plan-preview featured">
+      <div class="plan-left">
+        <div class="plan-ico" style="background:linear-gradient(135deg,#6D28D9,#8B5CF6)">2</div>
+        <div><div class="plan-pname">VIP 2</div><div class="plan-pprice">$40 USDT</div></div>
+      </div>
+      <div class="plan-right"><div class="plan-profit">+$96.00</div><div class="plan-days">30 jours</div><div class="plan-pop">POPULAIRE</div></div>
+    </div>
+    <div class="plan-preview">
+      <div class="plan-left">
+        <div class="plan-ico" style="background:linear-gradient(135deg,#065F46,#10B981)">3</div>
+        <div><div class="plan-pname">VIP 3</div><div class="plan-pprice">$50 USDT</div></div>
+      </div>
+      <div class="plan-right"><div class="plan-profit">+$159.60</div><div class="plan-days">38 jours</div></div>
+    </div>
+    <div class="plan-preview">
+      <div class="plan-left">
+        <div class="plan-ico" style="background:linear-gradient(135deg,#92400E,#F59E0B)">4</div>
+        <div><div class="plan-pname">VIP 4</div><div class="plan-pprice">$60 USDT</div></div>
+      </div>
+      <div class="plan-right"><div class="plan-profit">+$270.00</div><div class="plan-days">45 jours</div></div>
+    </div>
+    <div class="plan-preview">
+      <div class="plan-left">
+        <div class="plan-ico" style="background:linear-gradient(135deg,#9F1239,#F43F5E)">5</div>
+        <div><div class="plan-pname">VIP 5</div><div class="plan-pprice">$80 USDT</div></div>
+      </div>
+      <div class="plan-right"><div class="plan-profit">+$440.00</div><div class="plan-days">55 jours</div></div>
+    </div>
+  </div>
+  <div style="margin-top:16px">
+    <button class="btn-cta" onclick="goStart()">Voir tous les détails</button>
+  </div>
+</section>
+
+<!-- TEAM -->
+<div class="team-section">
+  <div class="team-title">Notre Équipe</div>
+  <div class="team-track" id="team-track"></div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-title">Prêt à investir?</div>
+  <div class="cta-sub">Rejoignez PAWINS et commencez à générer des profits dès le lancement</div>
+  <button class="btn-cta" onclick="goStart()">Créer mon compte gratuitement</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">PAWINS</div>
+  <div class="footer-copy">© 2026 PAWINS — Plateforme d'Investissement USDT</div>
+  <div style="margin-top:10px;font-size:11px;color:var(--text3)">pawinscrypto.com</div>
+</footer>
+
+<script>
+// Countdown
+function updateCountdown(){
+  const launch=new Date('2026-06-23T00:00:00');
+  const now=new Date();
+  const diff=launch-now;
+  if(diff<=0){
+    document.querySelector('.launch-section').innerHTML='<div style="text-align:center;padding:10px"><div style="color:var(--green);font-size:18px;font-weight:800">PAWINS est maintenant disponible!</div></div>';
+    return;
+  }
+  const d=Math.floor(diff/(1000*60*60*24));
+  const h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const m=Math.floor((diff%(1000*60*60))/(1000*60));
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-j').textContent=String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown,1000);
+
+// Team
+const teamMembers=[
+  {name:'Alex M.',role:'Fondateur'},{name:'Sophie R.',role:'Directrice'},
+  {name:'Marc T.',role:'Analyste'},{name:'Julie P.',role:'Support'},
+  {name:'Kevin D.',role:'Tech Lead'},{name:'Sarah N.',role:'Finance'},
+  {name:'Lucas B.',role:'Marketing'},{name:'Emma V.',role:'Designer'},
+];
+const palettes=[
+  ['#1565FF','#4D8EFF'],['#7C3AED','#A78BFA'],['#059669','#34D399'],
+  ['#D97706','#FCD34D'],['#DC2626','#F87171'],['#0891B2','#67E8F9'],
+  ['#7C3AED','#C4B5FD'],['#BE185D','#F9A8D4']
+];
+const doubled=[...teamMembers,...teamMembers];
+document.getElementById('team-track').innerHTML=doubled.map((m,i)=>{
+  const pal=palettes[i%palettes.length];
+  const ini=m.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  return `<div class="team-member">
+    <div class="team-avatar" style="background:linear-gradient(135deg,${pal[0]},${pal[1]});border-color:rgba(255,255,255,0.12)">
+      <div style="text-align:center">
+        <div style="font-size:18px;font-weight:900;color:white">${ini}</div>
+        <div style="font-size:5px;color:rgba(255,255,255,0.6);letter-spacing:1px;font-weight:700">PAWINS</div>
+      </div>
+    </div>
+    <div class="team-name">${m.name}</div>
+    <div class="team-role">${m.role}</div>
+  </div>`;
+}).join('');
+
+function goStart(){
+  window.location.href='inscription.html';
+}
+</script>
+</body>
+</html>
