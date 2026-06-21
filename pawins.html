@@ -903,7 +903,7 @@ function closeOverlay(){
 }
 
 function updateOverlayCountdown(){
-  const launch=new Date('2026-06-23T00:00:00');
+  const launch=new Date('2026-06-22T00:00:00');
   const now=new Date();
   const diff=launch-now;
   if(diff<=0){
@@ -1174,7 +1174,7 @@ buildTeam();
 
 // Launch countdown
 function updateLaunchBanner(){
-  const launch=new Date('2026-06-23T00:00:00');
+  const launch=new Date('2026-06-22T00:00:00');
   const now=new Date();
   const banner=document.getElementById('launch-banner');
   if(now<launch){
