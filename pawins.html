@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PAWINS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#04080F;--bg2:#080E1A;--bg3:#0D1422;
+  --blue:#1565FF;--blue2:#0A45CC;--blue-light:#4D8EFF;
+  --text:#F0F4FF;--text2:#6B7FA3;--text3:#3D4F6E;
+  --green:#00C97A;--red:#FF3D5A;--gold:#FFB300;
+  --card:#0A1020;--border:rgba(21,101,255,0.18);--border2:rgba(255,255,255,0.05);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;position:fixed;width:100%;top:0;left:0;right:0}
+::-webkit-scrollbar{width:0;height:0}
+.app{display:flex;flex-direction:column;height:100vh}
+.app-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px}
+.tab-view{display:none}.tab-view.active{display:block}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;background:var(--bg);border-bottom:1px solid var(--border2);position:sticky;top:0;z-index:100}
+.topbar-logo{font-size:20px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff,var(--blue-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-icon{width:34px;height:34px;background:var(--bg3);border:1px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.topbar-avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;cursor:pointer}
+
+/* CALENDAR */
+.cal-ticker{background:rgba(21,101,255,0.05);border-bottom:1px solid rgba(21,101,255,0.1);padding:9px 0;overflow:hidden}
+.cal-track{display:flex;animation:calScroll 16s linear infinite;width:max-content}
+@keyframes calScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.cal-day{padding:5px 14px;font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;display:flex;align-items:center;gap:5px;border-right:1px solid var(--border2)}
+.cal-day.today{color:var(--blue-light)}.cal-day.samedi{color:var(--gold);font-weight:800;font-size:12px}
+.cal-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* FLAGS */
+.flags-ticker{background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border2);padding:7px 0;overflow:hidden}
+.flags-track{display:flex;animation:flagScroll 22s linear infinite;width:max-content}
+@keyframes flagScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.flag-item{padding:3px 14px;font-size:18px;white-space:nowrap}
+
+/* BALANCE */
+.balance-card{margin:14px 18px;background:linear-gradient(135deg,#0A1830,#0D2050);border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.balance-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(21,101,255,0.2) 0%,transparent 70%);border-radius:50%}
+.bal-label{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.bal-amount{font-size:34px;font-weight:900;margin-bottom:3px}
+.bal-amount span{color:var(--blue-light)}
+.bal-usdt{font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:16px}
+.bal-actions{display:flex;gap:10px}
+.bal-btn{flex:1;padding:11px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Inter',sans-serif;transition:all 0.2s}
+.bal-btn.dep{background:var(--blue);color:white}.bal-btn.ret{background:rgba(255,255,255,0.07);color:white;border:1px solid rgba(255,255,255,0.1)}
+.bal-btn:active{transform:scale(0.97)}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px;margin-bottom:18px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+.stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px}
+.stat-val{font-size:17px;font-weight:800}.stat-val.g{color:var(--green)}.stat-val.b{color:var(--blue-light)}
+
+/* ACTIONS */
+.sec-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;padding:0 18px;margin-bottom:12px}
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 18px;margin-bottom:20px}
+.action-btn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+.action-icon{width:56px;height:56px;background:var(--card);border:1px solid var(--border);border-radius:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.action-icon svg{width:24px;height:24px}
+.action-icon:active{transform:scale(0.92)}
+.action-label{font-size:10px;color:var(--text2);text-align:center;font-weight:500}
+
+/* TEAM */
+.team-section{margin:0 0 20px;padding:14px 0 0}
+.team-track{display:flex;gap:16px;padding:0 18px;animation:teamScroll 22s linear infinite;width:max-content;overflow:hidden}
+@keyframes teamScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.team-member{display:flex;flex-direction:column;align-items:center;gap:7px;flex-shrink:0;opacity:0.8}
+.team-avatar{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(21,101,255,0.25)}
+
+/* BASSIN */
+.bassin-header{padding:18px 18px 0;margin-bottom:14px}
+.vip-cards{padding:0 18px;display:flex;flex-direction:column;gap:14px}
+.vip-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;cursor:pointer;position:relative}
+.vip-card.featured{border-color:rgba(21,101,255,0.45)}
+.vip-pop{position:absolute;top:13px;right:13px;background:var(--blue);color:white;font-size:9px;font-weight:800;padding:3px 8px;border-radius:5px}
+.vip-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px 11px;border-bottom:1px solid var(--border2)}
+.vip-name{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.vip-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:white}
+.vip-price{font-size:22px;font-weight:900;color:var(--blue-light)}
+.vip-price span{font-size:12px;color:var(--text2);font-weight:400}
+.vip-grid{display:grid;grid-template-columns:1fr 1fr}
+.vip-cell{padding:11px 16px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+.vip-cell:nth-child(even){border-right:none}.vip-cell:nth-last-child(-n+2){border-bottom:none}
+.vip-cell-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;margin-bottom:3px}
+.vip-cell-val{font-size:14px;font-weight:700}.vip-cell-val.g{color:var(--green)}.vip-cell-val.o{color:var(--gold)}
+.vip-foot{padding:12px 17px}
+.btn-vip{width:100%;padding:11px;border-radius:10px;border:none;color:white;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.vip-hint{font-size:10px;color:var(--text2);text-align:center;margin-top:6px}
+
+/* EKIP */
+.ekip-wrap{padding:18px}
+.ekip-hero{background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));border:1px solid rgba(21,101,255,0.25);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:18px}
+.ref-box{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--blue-light);font-weight:600;cursor:pointer;margin-top:14px}
+.ekip-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.ekip-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.ekip-stat-val{font-size:24px;font-weight:800;color:var(--blue-light);margin-bottom:3px}
+.ekip-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase}
+.comm-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.comm-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border2)}
+.comm-row:last-child{border-bottom:none}
+.comm-pct{font-size:13px;font-weight:800;color:var(--green)}
+
+/* FAQ */
+.faq-wrap{padding:18px}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:13px;font-weight:600}
+.faq-arrow{color:var(--text2);font-size:18px;transition:transform 0.2s;flex-shrink:0;margin-left:10px}
+.faq-a{display:none;padding:12px 16px 14px;font-size:12px;color:var(--text2);line-height:1.7;border-top:1px solid var(--border2)}
+.faq-item.open .faq-a{display:block}.faq-item.open .faq-arrow{transform:rotate(45deg)}
+
+/* MOI */
+.moi-wrap{padding:18px}
+.profile-card{background:linear-gradient(135deg,#0A1830,#0D2050);border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:22px;text-align:center;margin-bottom:14px}
+.profile-avatar{width:66px;height:66px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:white;margin:0 auto 11px}
+.info-section{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border2)}
+.info-row:last-child{border-bottom:none}
+.info-left{display:flex;align-items:center;gap:10px}
+.info-lbl{font-size:12px;color:var(--text2)}
+.info-val{font-size:12px;font-weight:600}
+.setting-item{background:var(--card);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;margin-bottom:8px}
+.setting-left{display:flex;align-items:center;gap:12px}
+.setting-icon{width:36px;height:36px;background:rgba(21,101,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.setting-title{font-size:13px;font-weight:600}
+.setting-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.logout-btn{width:100%;background:rgba(255,61,90,0.1);border:1px solid rgba(255,61,90,0.25);border-radius:12px;padding:13px;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(4,8,15,0.96);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.05);display:flex;padding:8px 0 20px;z-index:200}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;position:relative}
+.nav-ico{font-size:20px}.nav-lbl{font-size:10px;color:var(--text2);font-weight:500}
+.nav-item.active .nav-lbl{color:var(--blue)}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:500;align-items:flex-end;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:20px 20px 40px;width:100%;max-width:430px;animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;max-height:85vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:16px}
+.modal-info{background:rgba(21,101,255,0.07);border:1px solid rgba(21,101,255,0.15);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.modal-info strong{color:var(--blue-light)}
+.m-field{margin-bottom:12px}
+.m-field label{display:block;font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:5px;font-weight:700}
+.m-field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Inter',sans-serif;transition:border-color 0.2s}
+.m-field input:focus{border-color:var(--blue)}
+.m-field input::placeholder{color:var(--text2)}
+.btn-modal{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));border:none;border-radius:12px;padding:13px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 4px 16px rgba(21,101,255,0.35);transition:all 0.2s}
+.btn-modal:active{transform:scale(0.98)}
+.btn-modal.sec{background:rgba(255,255,255,0.05);border:1px solid var(--border);box-shadow:none;margin-top:8px}
+.net-tabs{display:flex;gap:8px;margin-bottom:14px}
+.net-tab{flex:1;text-align:center;padding:9px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);color:var(--text2);background:transparent}
+.net-tab.active{background:var(--blue);color:white;border-color:var(--blue)}
+.addr-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.addr-net{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;font-weight:700}
+.addr-text{font-size:11px;color:var(--blue-light);word-break:break-all;line-height:1.5;margin-bottom:10px;font-weight:600}
+.btn-copy{width:100%;background:rgba(21,101,255,0.1);border:1px solid rgba(21,101,255,0.25);border-radius:8px;padding:8px;color:var(--blue-light);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* PLAN SHEET */
+.plan-sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:400;align-items:flex-end;justify-content:center}
+.plan-sheet.active{display:flex}
+.plan-sheet-inner{background:var(--bg2);border:1px solid var(--border);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;padding:0 0 40px;animation:slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1) both;position:relative}
+.ps-close{position:absolute;top:14px;right:16px;width:30px;height:30px;background:rgba(255,255,255,0.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px}
+.ps-handle{width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;margin:14px auto 18px}
+.ps-header{padding:0 20px 18px;border-bottom:1px solid var(--border2)}
+.ps-price-box{background:linear-gradient(135deg,rgba(21,101,255,0.1),rgba(77,142,255,0.05));border:1px solid var(--border);border-radius:16px;padding:18px;margin:18px 20px;text-align:center}
+.ps-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 20px;margin-bottom:18px}
+.ps-stat{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px}
+.ps-stat-val{font-size:17px;font-weight:800;margin-bottom:2px}
+.ps-stat-val.g{color:var(--green)}.ps-stat-val.b{color:var(--blue-light)}.ps-stat-val.o{color:var(--gold)}
+.ps-stat-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px}
+.ps-weekly{padding:0 20px;margin-bottom:18px}
+.ps-weekly-row{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:7px}
+.ps-weekly-val{font-size:13px;font-weight:700;color:var(--green)}
+
+/* FEE PREVIEW */
+.fee-preview{display:none;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(21,101,255,0.2)}
+.fee-row{background:rgba(21,101,255,0.06);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.04)}
+.fee-net{background:rgba(0,201,122,0.06);padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+
+/* RECU */
+.recu-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
+.recu-logo{font-size:18px;font-weight:900;letter-spacing:3px;color:var(--blue-light);margin-bottom:3px}
+.recu-amount{font-size:34px;font-weight:900;color:var(--green);margin-bottom:3px}
+.recu-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2)}
+.recu-row:last-child{border-bottom:none}
+.recu-status{display:inline-block;background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.3);color:var(--gold);font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;margin-top:12px}
+
+/* LAUNCH OVERLAY */
+.launch-overlay{display:none;position:fixed;inset:0;background:rgba(4,8,15,0.97);backdrop-filter:blur(10px);z-index:9000;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+.launch-overlay.active{display:flex}
+
+/* ANNONCE MODAL */
+.ann-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);z-index:600;align-items:center;justify-content:center;padding:24px}
+.ann-overlay.active{display:flex}
+
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:600;z-index:9999;transition:transform 0.3s ease;white-space:nowrap;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(0,201,122,0.4);color:var(--green)}
+.toast.error{border-color:rgba(255,61,90,0.4);color:var(--red)}
+.toast.info{border-color:rgba(21,101,255,0.4);color:var(--blue-light)}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LAUNCH OVERLAY -->
+<div class="launch-overlay" id="launch-overlay">
+  <div style="font-size:32px;font-weight:900;letter-spacing:5px;background:linear-gradient(135deg,#fff,#4D8EFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px">PAWINS</div>
+  <div style="font-size:12px;color:#6B7FA3;text-transform:uppercase;letter-spacing:2px;margin-bottom:40px">Plateforme d'Investissement</div>
+  <div style="background:#0A1020;border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:28px 24px;width:100%;max-width:340px">
+    <div style="font-size:13px;color:#FFB300;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px">Lancement Officiel</div>
+    <div style="font-size:28px;font-weight:900;margin-bottom:6px">Lundi 22 Juin 2026</div>
+    <div style="font-size:22px;font-weight:900;color:#4D8EFF;margin:16px 0" id="overlay-cd">—</div>
+    <button onclick="closeLaunch()" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;color:#6B7FA3;font-size:13px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif">Retour</button>
+  </div>
+</div>
+
+<!-- ANNONCE MODAL -->
+<div class="ann-overlay" id="ann-overlay">
+  <div style="background:#080E1A;border:1px solid rgba(21,101,255,0.3);border-radius:20px;padding:26px 22px;width:100%;max-width:380px">
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff,#4D8EFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent">PAWINS</div>
+      <div style="height:2px;background:linear-gradient(90deg,#1565FF,transparent);border-radius:2px;margin-top:8px"></div>
+    </div>
+    <div style="font-size:15px;font-weight:800;margin-bottom:10px" id="ann-titre">Annonce</div>
+    <div style="font-size:13px;color:#6B7FA3;line-height:1.7;margin-bottom:20px" id="ann-msg"></div>
+    <button onclick="document.getElementById('ann-overlay').classList.remove('active')" style="width:100%;background:linear-gradient(135deg,#1565FF,#0A45CC);border:none;border-radius:12px;padding:13px;color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">J'ai compris</button>
+  </div>
+</div>
+
+<!-- PLAN SHEET -->
+<div class="plan-sheet" id="planSheet">
+  <div class="plan-sheet-inner">
+    <div class="ps-close" onclick="closePlan()">&#215;</div>
+    <div class="ps-handle"></div>
+    <div class="ps-header">
+      <div style="font-size:22px;font-weight:900;margin-bottom:3px" id="ps-name"></div>
+      <div style="font-size:12px;color:var(--text2)">Simulation complète</div>
+    </div>
+    <div class="ps-price-box">
+      <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Investissement</div>
+      <div style="font-size:40px;font-weight:900;color:var(--blue-light)" id="ps-price"></div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px">USDT</div>
+    </div>
+    <div class="ps-stats">
+      <div class="ps-stat"><div class="ps-stat-val b" id="ps-days"></div><div class="ps-stat-lbl">Durée</div></div>
+      <div class="ps-stat"><div class="ps-stat-val g" id="ps-daily"></div><div class="ps-stat-lbl">Profit/Jour</div></div>
+      <div class="ps-stat"><div class="ps-stat-val g" id="ps-total"></div><div class="ps-stat-lbl">Profit Total</div></div>
+      <div class="ps-stat"><div class="ps-stat-val o" id="ps-fee"></div><div class="ps-stat-lbl">Frais/Sam.</div></div>
+    </div>
+    <div class="ps-weekly">
+      <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:10px">Retraits chaque Samedi</div>
+      <div id="ps-rows"></div>
+    </div>
+    <div style="padding:0 20px"><button class="btn-modal" onclick="buyPlan()">Activer ce Plan &#8594;</button></div>
+  </div>
+</div>
+
+<!-- DEPOSIT MODAL -->
+<div class="modal-overlay" id="modal-dep">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Recharger USDT</div>
+    <div class="modal-sub">Choisissez votre réseau</div>
+    <div class="net-tabs">
+      <div class="net-tab active" id="ntab-bep" onclick="setNet('bep20')">BEP20 (BNB)</div>
+      <div class="net-tab" id="ntab-trc" onclick="setNet('trc20')">TRC20 (TRON)</div>
+    </div>
+    <div class="addr-box">
+      <div class="addr-net" id="dep-net-lbl">Réseau: BEP20 — BNB Chain</div>
+      <div class="addr-text" id="dep-addr">0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396</div>
+      <button class="btn-copy" onclick="copyAddr()">Copier l'adresse</button>
+    </div>
+    <div class="modal-info"><strong>Important:</strong> Envoyez uniquement du USDT sur le réseau sélectionné.</div>
+    <div class="m-field"><label>Montant envoyé (USDT)</label><input type="number" placeholder="Ex: 25" id="dep-amt"></div>
+    <div class="m-field"><label>Hash de transaction</label><input type="text" placeholder="Collez le hash ici" id="dep-hash"></div>
+    <button class="btn-modal" onclick="doDeposit()">Confirmer le dépôt</button>
+  </div>
+</div>
+
+<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="modal-ret">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Demande de Retrait</div>
+    <div class="modal-sub">Retraits chaque Samedi uniquement</div>
+    <div class="modal-info"><strong>Réseau:</strong> BEP20 uniquement &nbsp;|&nbsp; <strong>Minimum:</strong> $10</div>
+    <div class="m-field"><label>Votre adresse BEP20</label><input type="text" placeholder="0x..." id="ret-addr"></div>
+    <div class="m-field"><label>Montant (min. $10)</label><input type="number" placeholder="Ex: 10" id="ret-amt" oninput="showFee(this.value)"></div>
+    <div class="fee-preview" id="fee-preview">
+      <div class="fee-row"><span style="font-size:11px;color:var(--text2)">Montant</span><span id="fp-amt" style="font-weight:700;font-size:13px">$0</span></div>
+      <div class="fee-row"><span style="font-size:11px;color:var(--text2)">Frais</span><span id="fp-fee" style="font-weight:700;font-size:13px;color:var(--red)">-$0</span></div>
+      <div class="fee-net"><span style="font-size:12px;font-weight:700;color:var(--text2)">Vous recevrez</span><span id="fp-net" style="font-weight:900;font-size:18px;color:var(--green)">$0</span></div>
+    </div>
+    <button class="btn-modal" onclick="doWithdraw()">Soumettre la demande</button>
+  </div>
+</div>
+
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="modal-inv">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Inviter des Amis</div>
+    <div class="modal-sub">Gagnez des commissions automatiques</div>
+    <div class="addr-box">
+      <div class="addr-net">Votre lien de parrainage</div>
+      <div class="addr-text" id="inv-link">pawinscrypto.com/?ref=...</div>
+      <button class="btn-copy" onclick="copyInvite()">Copier le lien</button>
+    </div>
+    <div class="modal-info">VIP 1-3: <strong style="color:var(--green)">3%</strong> &nbsp;|&nbsp; VIP 4-5: <strong style="color:var(--green)">4%</strong></div>
+    <button class="btn-modal sec" onclick="closeM('modal-inv')">Fermer</button>
+  </div>
+</div>
+
+<!-- RECU MODAL -->
+<div class="modal-overlay" id="modal-recu">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="recu-card">
+      <div class="recu-logo">PAWINS</div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px">Reçu de Retrait</div>
+      <div class="recu-amount" id="recu-amt">$0.00</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:14px">USDT — BEP20</div>
+      <div class="recu-row"><span style="font-size:11px;color:var(--text2)">Nom</span><span style="font-size:11px;font-weight:600" id="recu-nom">—</span></div>
+      <div class="recu-row"><span style="font-size:11px;color:var(--text2)">Montant net</span><span style="font-size:11px;font-weight:600;color:var(--green)" id="recu-net">—</span></div>
+      <div class="recu-row"><span style="font-size:11px;color:var(--text2)">Frais</span><span style="font-size:11px;font-weight:600;color:var(--red)" id="recu-fee">—</span></div>
+      <div class="recu-row"><span style="font-size:11px;color:var(--text2)">Date</span><span style="font-size:11px;font-weight:600" id="recu-date">—</span></div>
+      <div class="recu-row"><span style="font-size:11px;color:var(--text2)">Référence</span><span style="font-size:10px;color:var(--text2)" id="recu-ref">—</span></div>
+      <div class="recu-status">En attente — Samedi</div>
+    </div>
+    <button class="btn-modal" onclick="closeM('modal-recu')">Fermer</button>
+  </div>
+</div>
+
+<!-- SUPPORT MODAL -->
+<div class="modal-overlay" id="modal-sup">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Support PAWINS</div>
+    <div class="modal-sub">Disponible 24h/24</div>
+    <div onclick="window.open('https://t.me/+NCLRtkec9kxlMmE5','_blank')" style="display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;margin-bottom:10px">
+      <div style="width:44px;height:44px;background:#229ED9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.013 9.487c-.149.658-.538.818-1.09.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.073 4.17 13.18c-.64-.2-.652-.64.136-.948l10.896-4.202c.532-.193.998.13.36.218z"/></svg>
+      </div>
+      <div><div style="font-size:14px;font-weight:700">Service Client Officiel</div><div style="font-size:11px;color:var(--text2);margin-top:2px">Réponse rapide — Telegram</div></div>
+      <div style="margin-left:auto;color:var(--text2);font-size:18px">›</div>
+    </div>
+    <button class="btn-modal sec" onclick="closeM('modal-sup')">Fermer</button>
+  </div>
+</div>
+
+<!-- APP MODAL -->
+<div class="modal-overlay" id="modal-app">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Installer l'Application</div>
+    <div class="modal-sub">Accédez à PAWINS depuis votre écran d'accueil</div>
+    <div class="modal-info">
+      <strong>iPhone (Safari):</strong><br>
+      1. Appuyez sur le bouton Partager<br>
+      2. "Sur l'écran d'accueil" → "Ajouter"<br><br>
+      <strong>Android (Chrome):</strong><br>
+      1. Menu en haut à droite<br>
+      2. "Ajouter à l'écran d'accueil"
+    </div>
+    <button class="btn-modal" onclick="closeM('modal-app')">Compris!</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app">
+  <div class="topbar">
+    <div class="topbar-logo">PAWINS</div>
+    <div class="topbar-right">
+      <div class="topbar-icon" onclick="openM('modal-sup')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7FA3" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="topbar-avatar" id="tb-av">P</div>
+    </div>
+  </div>
+
+  <div class="cal-ticker"><div class="cal-track" id="cal-track"></div></div>
+  <div class="flags-ticker"><div class="flags-track" id="flags-track"></div></div>
+
+  <div class="app-content">
+
+    <!-- MAISON -->
+    <div class="tab-view active" id="tab-maison">
+      <div style="padding:16px 18px 0">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:2px">Bonjour,</div>
+        <div style="font-size:18px;font-weight:800" id="home-name">...</div>
+      </div>
+      <div id="launch-banner" style="display:none;margin:12px 18px 0;background:linear-gradient(135deg,rgba(255,179,0,0.1),rgba(255,179,0,0.05));border:1px solid rgba(255,179,0,0.3);border-radius:14px;padding:12px 16px">
+        <div style="font-size:11px;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:4px">Lancement Officiel</div>
+        <div style="font-size:15px;font-weight:800">Lundi 22 Juin 2026</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px" id="banner-cd">...</div>
+      </div>
+      <div class="balance-card">
+        <div class="bal-label">Solde Total</div>
+        <div class="bal-amount">$<span id="home-bal">0.00</span></div>
+        <div class="bal-usdt">USDT disponible</div>
+        <div class="bal-actions">
+          <button class="bal-btn dep" onclick="openM('modal-dep')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            Recharger
+          </button>
+          <button class="bal-btn ret" onclick="openM('modal-ret')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            Retrait
+          </button>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-lbl">Membres Équipe</div><div class="stat-val b" id="home-team">0</div></div>
+        <div class="stat-card"><div class="stat-lbl">Revenu Équipe</div><div class="stat-val g">$<span id="home-trev">0.00</span></div></div>
+        <div class="stat-card"><div class="stat-lbl">Revenu Total</div><div class="stat-val g">$<span id="home-rev">0.00</span></div></div>
+        <div class="stat-card"><div class="stat-lbl">Plan Actif</div><div class="stat-val b" id="home-plan">—</div></div>
+      </div>
+      <div class="sec-title">Actions Rapides</div>
+      <div class="actions-grid">
+        <div class="action-btn" onclick="openM('modal-dep')"><div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div><div class="action-label">Recharger</div></div>
+        <div class="action-btn" onclick="openM('modal-ret')"><div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 7l-5-5-5 5"/><path d="M3 17h18"/></svg></div><div class="action-label">Retrait</div></div>
+        <div class="action-btn" onclick="openM('modal-inv')"><div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div class="action-label">Inviter</div></div>
+        <div class="action-btn" onclick="goTab('bassin')"><div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="action-label">Plans VIP</div></div>
+        <div class="action-btn" onclick="openM('modal-sup')"><div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="action-label">Support</div></div>
+        <div class="action-btn" onclick="openM('modal-app')"><div class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div class="action-label">Application</div></div>
+      </div>
+      <div class="team-section">
+        <div class="sec-title">Notre Équipe</div>
+        <div style="overflow:hidden"><div class="team-track" id="team-track"></div></div>
+      </div>
+    </div>
+
+    <!-- BASSIN -->
+    <div class="tab-view" id="tab-bassin">
+      <div class="bassin-header">
+        <div style="font-size:20px;font-weight:800;margin-bottom:3px">Plans VIP</div>
+        <div style="font-size:12px;color:var(--text2)">Appuyez pour voir la simulation</div>
+      </div>
+      <div class="vip-cards" id="vip-cards"></div>
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- EKIP -->
+    <div class="tab-view" id="tab-ekip">
+      <div class="ekip-wrap">
+        <div class="ekip-hero">
+          <div style="font-size:22px;font-weight:900;margin-bottom:4px">Votre Équipe</div>
+          <div style="font-size:12px;color:var(--text2)">Invitez des amis, gagnez des commissions</div>
+          <div class="ref-box" onclick="copyInvite()">
+            <span id="ekip-ref">pawinscrypto.com/?ref=...</span>
+            <span style="font-size:11px">Copier</span>
+          </div>
+        </div>
+        <div class="ekip-stats">
+          <div class="ekip-stat"><div class="ekip-stat-val" id="ekip-count">0</div><div class="ekip-stat-lbl">Membres</div></div>
+          <div class="ekip-stat"><div class="ekip-stat-val">$<span id="ekip-rev">0.00</span></div><div class="ekip-stat-lbl">Revenu Équipe</div></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Commissions</div>
+        <div class="comm-table">
+          <div class="comm-row"><span style="font-size:12px;font-weight:600">VIP 1</span><span class="comm-pct">3%</span><span style="font-size:11px;color:var(--text2)">$0.75</span></div>
+          <div class="comm-row"><span style="font-size:12px;font-weight:600">VIP 2</span><span class="comm-pct">3%</span><span style="font-size:11px;color:var(--text2)">$1.20</span></div>
+          <div class="comm-row"><span style="font-size:12px;font-weight:600">VIP 3</span><span class="comm-pct">3%</span><span style="font-size:11px;color:var(--text2)">$1.50</span></div>
+          <div class="comm-row"><span style="font-size:12px;font-weight:600">VIP 4</span><span class="comm-pct">4%</span><span style="font-size:11px;color:var(--text2)">$2.40</span></div>
+          <div class="comm-row"><span style="font-size:12px;font-weight:600">VIP 5</span><span class="comm-pct">4%</span><span style="font-size:11px;color:var(--text2)">$3.20</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="tab-view" id="tab-faq">
+      <div class="faq-wrap">
+        <div style="font-size:18px;font-weight:800;margin-bottom:14px">Questions Fréquentes</div>
+        <div class="faq-item"><div class="faq-q">Comment déposer des USDT? <span class="faq-arrow">+</span></div><div class="faq-a">Allez dans "Recharger", choisissez BEP20 ou TRC20, copiez l'adresse, envoyez vos USDT et entrez le hash.</div></div>
+        <div class="faq-item"><div class="faq-q">Quand puis-je retirer? <span class="faq-arrow">+</span></div><div class="faq-a">Les retraits s'effectuent chaque Samedi. Minimum $10 USDT. Vos profits s'accumulent chaque 24h.</div></div>
+        <div class="faq-item"><div class="faq-q">Comment fonctionne le parrainage? <span class="faq-arrow">+</span></div><div class="faq-a">Partagez votre lien. Quand un ami achète un plan, vous recevez 3 à 4% automatiquement.</div></div>
+        <div class="faq-item"><div class="faq-q">Quel réseau USDT utiliser? <span class="faq-arrow">+</span></div><div class="faq-a">BEP20 ou TRC20 pour les dépôts. BEP20 uniquement pour les retraits.</div></div>
+        <div class="faq-item"><div class="faq-q">Puis-je avoir plusieurs plans? <span class="faq-arrow">+</span></div><div class="faq-a">Un plan actif par compte. Une fois terminé, vous pouvez en choisir un nouveau.</div></div>
+      </div>
+    </div>
+
+    <!-- MOI -->
+    <div class="tab-view" id="tab-moi">
+      <div class="moi-wrap">
+        <div class="profile-card">
+          <div class="profile-avatar" id="moi-av">P</div>
+          <div style="font-size:18px;font-weight:800;margin-bottom:3px" id="moi-name">—</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:10px" id="moi-email">—</div>
+          <div style="display:inline-block;background:rgba(21,101,255,0.15);border:1px solid rgba(21,101,255,0.3);color:var(--blue-light);font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px" id="moi-badge">AUCUN PLAN</div>
+        </div>
+        <div class="info-section">
+          <div class="info-row"><div class="info-left"><span class="info-lbl">Solde</span></div><span class="info-val" style="color:var(--blue-light)">$<span id="moi-bal">0.00</span></span></div>
+          <div class="info-row"><div class="info-left"><span class="info-lbl">Revenu Total</span></div><span class="info-val" style="color:var(--green)">$<span id="moi-rev">0.00</span></span></div>
+          <div class="info-row"><div class="info-left"><span class="info-lbl">Membres Équipe</span></div><span class="info-val" id="moi-team">0</span></div>
+          <div class="info-row"><div class="info-left"><span class="info-lbl">Date Inscription</span></div><span class="info-val" id="moi-date">—</span></div>
+          <div class="info-row"><div class="info-left"><span class="info-lbl">Code Référence</span></div><span class="info-val" style="color:var(--blue-light)" id="moi-ref">—</span></div>
+        </div>
+        <div class="setting-item" onclick="openM('modal-ret')"><div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/><path d="M3 17h18"/></svg></div><div><div class="setting-title">Retrait USDT</div><div class="setting-sub">Chaque Samedi — Min. $10</div></div></div><div style="color:var(--text2);font-size:16px">›</div></div>
+        <div class="setting-item" onclick="openM('modal-inv')"><div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div><div><div class="setting-title">Programme de Parrainage</div><div class="setting-sub">Invitez et gagnez</div></div></div><div style="color:var(--text2);font-size:16px">›</div></div>
+        <div class="setting-item" onclick="openM('modal-sup')"><div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="setting-title">Support</div><div class="setting-sub">Contacter notre équipe</div></div></div><div style="color:var(--text2);font-size:16px">›</div></div>
+        <div class="setting-item" onclick="openM('modal-app')"><div class="setting-left"><div class="setting-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4D8EFF" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div><div class="setting-title">Installer l'Application</div><div class="setting-sub">Ajouter sur l'écran d'accueil</div></div></div><div style="color:var(--text2);font-size:16px">›</div></div>
+        <button class="logout-btn" onclick="logout()">Se déconnecter</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-maison" onclick="goTab('maison')"><span class="nav-ico">&#8962;</span><span class="nav-lbl">Accueil</span></div>
+    <div class="nav-item" id="nav-bassin" onclick="goTab('bassin')"><span class="nav-ico">&#11088;</span><span class="nav-lbl">Bassin</span></div>
+    <div class="nav-item" id="nav-ekip" onclick="goTab('ekip')"><span class="nav-ico">&#128101;</span><span class="nav-lbl">Équipe</span></div>
+    <div class="nav-item" id="nav-faq" onclick="goTab('faq')"><span class="nav-ico">&#10067;</span><span class="nav-lbl">FAQ</span></div>
+    <div class="nav-item" id="nav-moi" onclick="goTab('moi')"><span class="nav-ico">&#128100;</span><span class="nav-lbl">Moi</span></div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+// ===== GLOBAL FUNCTIONS - Always accessible =====
+function goTab(t){
+  document.querySelectorAll('.tab-view').forEach(function(v){v.classList.remove('active')});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  var tv=document.getElementById('tab-'+t);
+  var nv=document.getElementById('nav-'+t);
+  if(tv)tv.classList.add('active');
+  if(nv)nv.classList.add('active');
+  document.querySelector('.app-content').scrollTop=0;
+}
+
+function openM(id){
+  var el=document.getElementById(id);
+  if(el)el.classList.add('active');
+}
+
+function closeM(id){
+  var el=document.getElementById(id);
+  if(el)el.classList.remove('active');
+}
+
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.className='toast '+(type||'info')+' show';
+  setTimeout(function(){t.classList.remove('show')},2800);
+}
+
+function closeLaunch(){
+  document.getElementById('launch-overlay').classList.remove('active');
+}
+
+function closePlan(){
+  document.getElementById('planSheet').classList.remove('active');
+}
+
+// FAQ
+document.addEventListener('click',function(e){
+  var q=e.target.closest('.faq-q');
+  if(!q)return;
+  var item=q.parentElement;
+  var wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(f){f.classList.remove('open')});
+  if(!wasOpen)item.classList.add('open');
+});
+
+// Close modals on backdrop click
+document.addEventListener('click',function(e){
+  if(e.target.classList.contains('modal-overlay'))e.target.classList.remove('active');
+  if(e.target===document.getElementById('planSheet'))closePlan();
+});
+
+// ===== DATA =====
+var PLANS=[
+  {id:1,name:'VIP 1',bg:'linear-gradient(135deg,#1D4ED8,#3B82F6)',price:25,days:22,daily:2.00,fee:4.00},
+  {id:2,name:'VIP 2',bg:'linear-gradient(135deg,#6D28D9,#8B5CF6)',price:40,days:30,daily:3.20,fee:6.00,featured:true},
+  {id:3,name:'VIP 3',bg:'linear-gradient(135deg,#065F46,#10B981)',price:50,days:38,daily:4.20,fee:8.00},
+  {id:4,name:'VIP 4',bg:'linear-gradient(135deg,#92400E,#F59E0B)',price:60,days:45,daily:6.00,fee:10.00},
+  {id:5,name:'VIP 5',bg:'linear-gradient(135deg,#9F1239,#F43F5E)',price:80,days:55,daily:8.00,fee:12.00}
+];
+
+var ADDRS={bep20:'0x7fD50dAAfeA0a8Df3E4860ECC81939fFBaa11396',trc20:'TYDHcrwhGkRH68u2fWat72iJoNFqhoadHy'};
+var TEAM=[{n:'Alex M.',r:'Fondateur'},{n:'Sophie R.',r:'Directrice'},{n:'Marc T.',r:'Analyste'},{n:'Julie P.',r:'Support'},{n:'Kevin D.',r:'Tech Lead'},{n:'Sarah N.',r:'Finance'},{n:'Lucas B.',r:'Marketing'},{n:'Emma V.',r:'Designer'}];
+var FLAGS=['🇭🇹','🇫🇷','🇺🇸','🇨🇦','🇧🇯','🇨🇮','🇸🇳','🇨🇲','🇬🇳','🇹🇬','🇧🇫','🇲🇱','🇬🇭','🇳🇬','🇧🇷','🇲🇦','🇩🇿','🇲🇬','🇨🇩','🇬🇦'];
+var LAUNCH=new Date('2026-06-22T00:00:00');
+var currentNet='bep20';
+var currentPlanData=null;
+
+var USER={uid:'',nom:'',prenom:'',email:'',balance:0,baseBalance:0,totalRev:0,baseRev:0,teamCount:0,teamRev:0,plan:null,planStartDate:null,refCode:'',date:'—'};
+
+// ===== LAUNCH CHECK =====
+function isLaunched(){return new Date()>=LAUNCH;}
+
+function showLaunch(){
+  var diff=LAUNCH-new Date();
+  if(diff<=0){document.getElementById('overlay-cd').textContent='Disponible maintenant!';return;}
+  var d=Math.floor(diff/(1000*60*60*24));
+  var h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  var m=Math.floor((diff%(1000*60*60))/(1000*60));
+  var s=Math.floor((diff%60000)/1000);
+  document.getElementById('overlay-cd').textContent=d+'j '+h+'h '+m+'m '+s+'s';
+}
+
+function checkLaunch(){
+  if(!isLaunched()){
+    document.getElementById('launch-overlay').classList.add('active');
+    showLaunch();
+    var iv=setInterval(function(){
+      if(document.getElementById('launch-overlay').classList.contains('active')){showLaunch();}
+      else{clearInterval(iv);}
+    },1000);
+    return false;
+  }
+  return true;
+}
+
+// ===== CALENDAR =====
+function buildCal(){
+  var days=[{n:'Lundi',i:1},{n:'Mardi',i:2},{n:'Mercredi',i:3},{n:'Jeudi',i:4},{n:'Vendredi',i:5},{n:'SAMEDI — Retraits',i:6,s:true},{n:'Dimanche',i:0}];
+  var today=new Date().getDay();
+  var html='';
+  for(var r=0;r<2;r++){
+    days.forEach(function(d){
+      var cls='cal-day'+(d.s?' samedi':(d.i===today?' today':''));
+      html+='<div class="'+cls+'"><div class="cal-dot"></div>'+d.n+(d.i===today&&!d.s?' (Aujourd\'hui)':'')+'</div>';
+    });
+  }
+  document.getElementById('cal-track').innerHTML=html;
+}
+
+// ===== FLAGS =====
+function buildFlags(){
+  var doubled=FLAGS.concat(FLAGS);
+  document.getElementById('flags-track').innerHTML=doubled.map(function(f){return '<div class="flag-item">'+f+'</div>';}).join('');
+}
+
+// ===== VIP CARDS =====
+function buildVip(){
+  document.getElementById('vip-cards').innerHTML=PLANS.map(function(p){
+    return '<div class="vip-card'+(p.featured?' featured':'')+'" onclick="openPlan('+p.id+')">'
+      +(p.featured?'<div class="vip-pop">POPULAIRE</div>':'')
+      +'<div class="vip-head">'
+        +'<div class="vip-name"><div class="vip-icon" style="background:'+p.bg+'">'+p.id+'</div>'+p.name+'</div>'
+        +'<div class="vip-price">$'+p.price+'<span>/plan</span></div>'
+      +'</div>'
+      +'<div class="vip-grid">'
+        +'<div class="vip-cell"><div class="vip-cell-lbl">Durée</div><div class="vip-cell-val">'+p.days+' jours</div></div>'
+        +'<div class="vip-cell"><div class="vip-cell-lbl">Profit/jour</div><div class="vip-cell-val g">$'+p.daily.toFixed(2)+'</div></div>'
+        +'<div class="vip-cell"><div class="vip-cell-lbl">Profit Total</div><div class="vip-cell-val g">$'+(p.days*p.daily).toFixed(2)+'</div></div>'
+        +'<div class="vip-cell"><div class="vip-cell-lbl">Frais/Sam.</div><div class="vip-cell-val o">$'+p.fee.toFixed(2)+'</div></div>'
+      +'</div>'
+      +'<div class="vip-foot"><button class="btn-vip" style="background:'+p.bg+'">Voir les détails →</button></div>'
+    +'</div>';
+  }).join('');
+}
+
+// ===== TEAM =====
+function buildTeam(){
+  var pals=[['#1565FF','#4D8EFF'],['#7C3AED','#A78BFA'],['#059669','#34D399'],['#D97706','#FCD34D'],['#DC2626','#F87171'],['#0891B2','#67E8F9'],['#7C3AED','#C4B5FD'],['#BE185D','#F9A8D4']];
+  var doubled=TEAM.concat(TEAM);
+  document.getElementById('team-track').innerHTML=doubled.map(function(m,i){
+    var pal=pals[i%pals.length];
+    var ini=m.n.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    return '<div class="team-member">'
+      +'<div class="team-avatar" style="background:linear-gradient(135deg,'+pal[0]+','+pal[1]+')">'
+        +'<div style="text-align:center"><div style="font-size:18px;font-weight:900;color:white">'+ini+'</div><div style="font-size:5px;color:rgba(255,255,255,0.6);letter-spacing:1px;font-weight:700">PAWINS</div></div>'
+      +'</div>'
+      +'<div style="font-size:11px;font-weight:700;color:var(--text2)">'+m.n+'</div>'
+      +'<div style="font-size:9px;color:var(--text3)">'+m.r+'</div>'
+    +'</div>';
+  }).join('');
+}
+
+// ===== UI UPDATE =====
+function updateUI(){
+  var u=USER;
+  var full=(u.nom+' '+u.prenom).trim()||'Utilisateur';
+  var profit=Math.max(0,u.balance-u.baseBalance);
+
+  document.getElementById('home-name').textContent=full;
+  document.getElementById('home-bal').textContent=u.balance.toFixed(2);
+  document.getElementById('home-team').textContent=u.teamCount;
+  document.getElementById('home-trev').textContent=u.teamRev.toFixed(2);
+  document.getElementById('home-rev').textContent=u.totalRev.toFixed(2);
+  document.getElementById('home-plan').textContent=u.plan?'VIP '+u.plan:'—';
+  document.getElementById('tb-av').textContent=(u.nom||'P').charAt(0).toUpperCase();
+  document.getElementById('moi-av').textContent=(u.nom||'P').charAt(0).toUpperCase();
+  document.getElementById('moi-name').textContent=full;
+  document.getElementById('moi-email').textContent=u.email||'—';
+  document.getElementById('moi-badge').textContent=u.plan?'VIP '+u.plan+' ACTIF':'AUCUN PLAN';
+  document.getElementById('moi-bal').textContent=u.balance.toFixed(2);
+  document.getElementById('moi-rev').textContent=u.totalRev.toFixed(2);
+  document.getElementById('moi-team').textContent=u.teamCount;
+  document.getElementById('moi-date').textContent=u.date;
+  document.getElementById('moi-ref').textContent=u.refCode||'—';
+  document.getElementById('ekip-count').textContent=u.teamCount;
+  document.getElementById('ekip-rev').textContent=u.teamRev.toFixed(2);
+  var ref='pawinscrypto.com/?ref='+(u.refCode||'');
+  document.getElementById('ekip-ref').textContent=ref;
+  document.getElementById('inv-link').textContent=ref;
+
+  // Launch banner
+  var banner=document.getElementById('launch-banner');
+  var now=new Date();
+  if(now<LAUNCH){
+    banner.style.display='block';
+    var diff=LAUNCH-now;
+    var d=Math.floor(diff/(1000*60*60*24));
+    var h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    var m=Math.floor((diff%(1000*60*60))/(1000*60));
+    document.getElementById('banner-cd').textContent='Lancement dans: '+d+'j '+h+'h '+m+'min';
+  } else {
+    banner.style.display='none';
+  }
+}
+
+// ===== PROFIT =====
+function calcProfit(){
+  var u=USER;
+  if(!u.plan||!u.planStartDate)return;
+  var p=PLANS.find(function(x){return x.id===u.plan;});
+  if(!p)return;
+  var days=Math.floor((new Date()-new Date(u.planStartDate))/(1000*60*60*24));
+  // Plan expire?
+  if(days>=p.days){
+    var totalEarned=p.days*p.daily;
+    u.balance=u.baseBalance+totalEarned;
+    u.totalRev=u.baseRev+totalEarned;
+    u.plan=null;u.planStartDate=null;
+    if(u.uid&&db){
+      db.collection('users').doc(u.uid).update({planActif:null,planStartDate:null,balance:u.balance,totalRevenu:u.totalRev}).catch(function(){});
+    }
+    updateUI();
+    toast('Votre plan est terminé! Choisissez un nouveau plan.','info');
+    return;
+  }
+  var earned=Math.min(days,p.days)*p.daily;
+  u.balance=u.baseBalance+earned;
+  u.totalRev=u.baseRev+earned;
+  updateUI();
+}
+
+// ===== DEPOSIT =====
+function setNet(net){
+  currentNet=net;
+  document.getElementById('dep-addr').textContent=ADDRS[net];
+  document.getElementById('dep-net-lbl').textContent=net==='bep20'?'Réseau: BEP20 — BNB Chain':'Réseau: TRC20 — TRON';
+  document.getElementById('ntab-bep').className='net-tab'+(net==='bep20'?' active':'');
+  document.getElementById('ntab-trc').className='net-tab'+(net==='trc20'?' active':'');
+}
+
+function copyAddr(){
+  if(navigator.clipboard)navigator.clipboard.writeText(ADDRS[currentNet]).catch(function(){});
+  toast('Adresse copiée!','success');
+}
+
+function doDeposit(){
+  if(!checkLaunch())return;
+  var amt=parseFloat(document.getElementById('dep-amt').value);
+  var hash=document.getElementById('dep-hash').value.trim();
+  if(!amt||amt<=0){toast('Entrez le montant','error');return;}
+  if(!hash){toast('Entrez le hash de transaction','error');return;}
+  USER.balance=(USER.balance||0)+amt;
+  USER.baseBalance=USER.balance;
+  if(USER.uid&&db){
+    db.collection('users').doc(USER.uid).update({balance:USER.balance}).catch(function(){});
+    db.collection('transactions').add({userId:USER.uid,type:'depot',nomClient:(USER.nom+' '+USER.prenom).trim(),email:USER.email,montant:amt,reseau:currentNet,hash:hash,statut:'confirme',date:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+  }
+  updateUI();
+  closeM('modal-dep');
+  document.getElementById('dep-amt').value='';
+  document.getElementById('dep-hash').value='';
+  toast('Dépôt confirmé! +$'+amt.toFixed(2)+' USDT','success');
+}
+
+// ===== WITHDRAW =====
+function showFee(val){
+  var amt=parseFloat(val)||0;
+  var p=USER.plan?PLANS.find(function(x){return x.id===USER.plan;}):null;
+  var prev=document.getElementById('fee-preview');
+  if(!p||amt<=0){prev.style.display='none';return;}
+  var fee=p.fee;
+  var net=Math.max(0,amt-fee);
+  prev.style.display='block';
+  document.getElementById('fp-amt').textContent='$'+amt.toFixed(2);
+  document.getElementById('fp-fee').textContent='-$'+fee.toFixed(2);
+  document.getElementById('fp-net').textContent='$'+net.toFixed(2);
+}
+
+function doWithdraw(){
+  if(!checkLaunch())return;
+  var addr=document.getElementById('ret-addr').value.trim();
+  var amt=parseFloat(document.getElementById('ret-amt').value);
+  if(!addr){toast('Entrez votre adresse BEP20','error');return;}
+  if(!addr.startsWith('0x')){toast('Adresse BEP20 invalide (doit commencer par 0x)','error');return;}
+  if(!amt||amt<10){toast('Minimum $10 USDT','error');return;}
+  var profit=Math.max(0,USER.balance-USER.baseBalance);
+  if(profit<=0){toast('Aucun profit disponible','error');return;}
+  if(amt>profit){toast('Maximum disponible: $'+profit.toFixed(2),'error');return;}
+  var p=USER.plan?PLANS.find(function(x){return x.id===USER.plan;}):null;
+  var fee=p?p.fee:0;
+  var net=Math.max(0,amt-fee);
+  closeM('modal-ret');
+  if(USER.uid&&db){
+    db.collection('transactions').add({userId:USER.uid,type:'retrait',nomClient:(USER.nom+' '+USER.prenom).trim(),email:USER.email||'',phone:USER.phone||'',montant:amt,adresse:addr,planId:USER.plan||null,statut:'en_attente',date:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+  }
+  var now=new Date();
+  document.getElementById('recu-amt').textContent='$'+amt.toFixed(2);
+  document.getElementById('recu-nom').textContent=(USER.nom+' '+USER.prenom).trim();
+  document.getElementById('recu-net').textContent='$'+net.toFixed(2);
+  document.getElementById('recu-fee').textContent='$'+fee.toFixed(2);
+  document.getElementById('recu-date').textContent=now.toLocaleDateString('fr-FR');
+  document.getElementById('recu-ref').textContent='#PWN'+Date.now().toString().slice(-8);
+  setTimeout(function(){openM('modal-recu');toast('Demande envoyée! Traitement le Samedi','success');},300);
+}
+
+// ===== INVITE =====
+function copyInvite(){
+  var link='https://pawinscrypto.com/?ref='+(USER.refCode||'');
+  if(navigator.clipboard)navigator.clipboard.writeText(link).catch(function(){});
+  toast('Lien copié!','success');
+  closeM('modal-inv');
+}
+
+// ===== PLAN =====
+function openPlan(id){
+  var p=PLANS.find(function(x){return x.id===id;});
+  if(!p)return;
+  currentPlanData=p;
+  document.getElementById('ps-name').textContent=p.name;
+  document.getElementById('ps-price').textContent='$'+p.price;
+  document.getElementById('ps-days').textContent=p.days+' jours';
+  document.getElementById('ps-daily').textContent='$'+p.daily.toFixed(2);
+  document.getElementById('ps-total').textContent='$'+(p.days*p.daily).toFixed(2);
+  document.getElementById('ps-fee').textContent='$'+p.fee.toFixed(2);
+  var weeks=Math.ceil(p.days/7);
+  var rows='';
+  for(var w=1;w<=weeks;w++){
+    var d=Math.min(7,p.days-(w-1)*7);
+    rows+='<div class="ps-weekly-row"><div style="font-size:12px;font-weight:600">Samedi '+w+' ('+d+' jours)</div><div class="ps-weekly-val">+$'+(d*p.daily).toFixed(2)+'</div></div>';
+  }
+  document.getElementById('ps-rows').innerHTML=rows;
+  document.getElementById('planSheet').classList.add('active');
+}
+
+function buyPlan(){
+  if(!checkLaunch())return;
+  if(!currentPlanData)return;
+  if(USER.balance<currentPlanData.price){
+    closePlan();
+    setTimeout(function(){toast('Solde insuffisant — Rechargez d\'abord','error');openM('modal-dep');},300);
+    return;
+  }
+  USER.plan=currentPlanData.id;
+  USER.baseBalance=USER.balance;
+  USER.baseRev=USER.totalRev;
+  USER.planStartDate=new Date().toISOString();
+  if(USER.uid&&db){
+    db.collection('users').doc(USER.uid).update({planActif:currentPlanData.id,planStartDate:USER.planStartDate,baseBalance:USER.baseBalance,baseRev:USER.baseRev}).catch(function(){});
+  }
+  // Referral bonus
+  applyRef(currentPlanData);
+  updateUI();
+  closePlan();
+  toast('VIP '+currentPlanData.id+' activé avec succès!','success');
+  calcProfit();
+}
+
+// ===== REFERRAL =====
+function applyRef(plan){
+  var ref=localStorage.getItem('pawins_ref');
+  if(!ref||ref===USER.refCode)return;
+  if(!db)return;
+  db.collection('users').where('refCode','==',ref).limit(1).get().then(function(snap){
+    if(snap.empty)return;
+    var parent=snap.docs[0];
+    var pd=parent.data();
+    var pct=plan.id>=4?0.04:0.03;
+    var bonus=plan.price*pct;
+    db.collection('users').doc(parent.id).update({balance:(pd.balance||0)+bonus,teamRevenu:(pd.teamRevenu||0)+bonus,teamCount:(pd.teamCount||0)+1}).catch(function(){});
+    db.collection('notifications').add({userId:parent.id,type:'bonus_referral',message:'Bonus parrainage +$'+bonus.toFixed(2)+' USDT (VIP '+plan.id+')',montant:bonus,lu:false,date:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+    localStorage.removeItem('pawins_ref');
+  }).catch(function(){});
+}
+
+// ===== LOGOUT =====
+function logout(){
+  if(USER.uid&&db){
+    db.collection('presence').doc(USER.uid).delete().catch(function(){});
+  }
+  if(auth)auth.signOut().then(function(){window.location.href='inscription.html';}).catch(function(){window.location.href='inscription.html';});
+  else window.location.href='inscription.html';
+}
+
+// ===== INIT UI =====
+buildCal();
+buildFlags();
+buildVip();
+buildTeam();
+
+// Capture ref
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  var ref=params.get('ref');
+  if(ref)localStorage.setItem('pawins_ref',ref);
+})();
+
+// ===== FIREBASE =====
+var auth=null,db=null;
+try{
+  var fbConfig={
+    apiKey:"AIzaSyBPFxkA1JNXuXCrDh8cDJeZL-gxo717DD4",
+    authDomain:"pawins-bbdfc.firebaseapp.com",
+    projectId:"pawins-bbdfc",
+    storageBucket:"pawins-bbdfc.firebasestorage.app",
+    messagingSenderId:"245443495905",
+    appId:"1:245443495905:web:6cd012de019fe7f81774a0"
+  };
+  try{firebase.initializeApp(fbConfig);}catch(e){firebase.app();}
+  auth=firebase.auth();
+  db=firebase.firestore();
+
+  auth.onAuthStateChanged(function(u){
+    if(!u){window.location.href='inscription.html';return;}
+    db.collection('users').doc(u.uid).get().then(function(snap){
+      if(snap.exists){
+        var d=snap.data();
+        USER.uid=u.uid;
+        USER.nom=(d.nom||'').trim()||(u.displayName||'').split(' ')[0]||(u.email||'').split('@')[0]||'';
+        USER.prenom=(d.prenom||'').trim()||(u.displayName||'').split(' ').slice(1).join(' ')||'';
+        USER.email=d.email||u.email||'';
+        USER.phone=d.phone||'';
+        USER.balance=d.balance||0;
+        USER.baseBalance=d.baseBalance!=null?d.baseBalance:(d.balance||0);
+        USER.totalRev=d.totalRevenu||0;
+        USER.baseRev=d.baseRev||0;
+        USER.teamCount=d.teamCount||0;
+        USER.teamRev=d.teamRevenu||0;
+        USER.plan=d.planActif||null;
+        USER.planStartDate=d.planStartDate||null;
+        USER.refCode=d.refCode||('PWN'+u.uid.slice(0,8).toUpperCase());
+        USER.date=d.dateInscription&&d.dateInscription.toDate?d.dateInscription.toDate().toLocaleDateString('fr-FR'):'—';
+      } else {
+        USER.uid=u.uid;
+        USER.nom=(u.displayName||'').split(' ')[0]||(u.email||'').split('@')[0]||'';
+        USER.prenom=(u.displayName||'').split(' ').slice(1).join(' ')||'';
+        USER.email=u.email||'';
+        USER.refCode='PWN'+Math.random().toString(36).substr(2,8).toUpperCase();
+        db.collection('users').doc(u.uid).set({nom:USER.nom,prenom:USER.prenom,email:USER.email,phone:'',balance:0,baseBalance:0,totalRevenu:0,baseRev:0,teamCount:0,teamRevenu:0,planActif:null,planStartDate:null,refCode:USER.refCode,dateInscription:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});
+      }
+      updateUI();
+      calcProfit();
+      // Presence
+      db.collection('presence').doc(u.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp(),nom:USER.nom+' '+USER.prenom}).catch(function(){});
+      setInterval(function(){db.collection('presence').doc(u.uid).set({lastSeen:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(){});},120000);
+      // Notifications
+      db.collection('notifications').where('userId','==',u.uid).where('lu','==',false).onSnapshot(function(snap){
+        snap.docChanges().forEach(function(ch){
+          if(ch.type==='added'){
+            var nd=ch.doc.data();
+            var tp=nd.type==='retrait_approuve'?'success':nd.type==='retrait_rejete'?'error':'success';
+            toast(nd.message||'Notification',tp);
+            db.collection('notifications').doc(ch.doc.id).update({lu:true}).catch(function(){});
+          }
+        });
+      });
+      // Annonces
+      var firstAnn=true;
+      db.collection('annonces').orderBy('date','desc').limit(1).onSnapshot(function(snap){
+        if(firstAnn){firstAnn=false;return;}
+        snap.docChanges().forEach(function(ch){
+          if(ch.type==='added'){
+            var ad=ch.doc.data();
+            document.getElementById('ann-titre').textContent=ad.titre||'Annonce';
+            document.getElementById('ann-msg').textContent=ad.message||'';
+            setTimeout(function(){document.getElementById('ann-overlay').classList.add('active');},1000);
+          }
+        });
+      });
+      // Check recent annonce
+      db.collection('annonces').orderBy('date','desc').limit(1).get().then(function(s){
+        if(s.empty)return;
+        var ad=s.docs[0].data();
+        if(!ad.date)return;
+        var dd=ad.date.toDate?ad.date.toDate():new Date(ad.date);
+        if(new Date()-dd<24*60*60*1000){
+          var seen=localStorage.getItem('pawins_ann_seen');
+          if(seen===s.docs[0].id)return;
+          document.getElementById('ann-titre').textContent=ad.titre||'Annonce';
+          document.getElementById('ann-msg').textContent=ad.message||'';
+          document.getElementById('ann-overlay').classList.add('active');
+          localStorage.setItem('pawins_ann_seen',s.docs[0].id);
+        }
+      }).catch(function(){});
+    }).catch(function(e){
+      console.log('Firestore error:',e);
+      updateUI();
+    });
+  });
+} catch(e){
+  console.log('Firebase error:',e);
+}
+</script>
+</body>
+</html>
